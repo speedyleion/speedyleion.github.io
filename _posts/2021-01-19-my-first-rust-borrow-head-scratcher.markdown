@@ -164,6 +164,16 @@ This means that the code was trying to send the local slice outside of
 prevented the possibility of an error that referenced the u8 slice and thus
 avoided the borrow error.
 
+Update (2021-01-20)
+===================
+
+The same night, after I wrote this post, my google fu uncovers a stack
+overflow question someone had almost two years prior. The SO question is the
+same underlying issue,
+https://stackoverflow.com/questions/55184864/nom-parser-borrow-checker-issue.
+The author of the post has a much more consise example of the issue and I'm
+assuming the answer is from a more experienced rust person.
+
 [rust-book]: https://doc.rust-lang.org/book/ 
 [nom]: https://docs.rs/nom/6.0.1/nom/
 [git-index]: https://git-scm.com/docs/index-format
