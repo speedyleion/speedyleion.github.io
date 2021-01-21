@@ -62,43 +62,6 @@ with CMake the two commands often go together for code generation. The custom
 target allows for easier referencing from other targets, as well as providing
 some other benefits.
 
-For C/C++ code there are 2 possibilities when generating source files:
-- The file is a header file and is only included by other files.
-- The file is an actual code module and will itself be compiled.
-Each one of these cases has a slightly different use case for hooking up to
-downstream targets.
-
-Header Files
-------------
-
-For header files there's usually three steps:
-- Create an interface library. This is just a place holder library that allows
-  us to propagate the ``generator_target`` dependency as well as populate the
-  include directory of the generated file.  
-- Make the interface library depend on the ``generator_target``. This ensures
-  that the ``generator_target`` and thus the custom command is run prior to
-  anything that depends on the interface library.
-- Add the include directory to the interface library so downstream targets
-  know where to find the generated header.
-
-We created a library ``my_interface_library``
-{% highlight cmake %}
-add_library(my_interface_library INTERFACE)
-add_dependencies(my_interface_library generator_target)
-target_include_directories(my_interface_library INTERFACE ${CMAKE_BINARY_DIR})
-{% endhighlight %}
-
-Header files will show up as a dependency when the source files that include
-them are compiled. Since the custom command will be run prior to any
-downstream targets, the downstream targets will only look to see if the
-header is out of date after it has been re-generated.
-
-Code Module
------------
-
-When generating a file that will itself get compiled there are a couple of
-things to do to work with CMake's checks.  
-
 CMake will complain if a source file is missing, unless it has the
 [GENERATED][generated] property set. However setting the
 [GENERATED][generated] property causes CMake to clean the file. This means we
@@ -124,6 +87,17 @@ set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/generated.c
     PROPERTIES OBJECT_DEPENDS ${CMAKE_BINARY_DIR}/my_generator.stamp
 )
 {% endhighlight %}
+
+Caveats
+=======
+
+- For headers I haven't yet found a reliable incremental path for all build
+  backends. In particular [Ninja][ninja], and guessing make, will do an
+  initial inspection of the build tree to see what is out of date, and then
+  run the build commands. Since the header isn't advertising itself as
+  generated to CMake, there is no way for Ninja to know to mark users of the
+  header as out of date during the initial inspection of the build tree. One
+  can invoke the build twice, but this is error prone.
 
 
 [add_custom_command]: https://cmake.org/cmake/help/latest/command/add_custom_command.html
