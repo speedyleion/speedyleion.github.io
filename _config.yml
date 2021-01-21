@@ -32,12 +32,10 @@ theme: minima
 plugins:
   - jekyll-feed
 
-repository: speedyleion/speedyleion.github.io
-comments:
-  provider: "utterances"
-  utterances:
-    theme: "github-light"
-    issue_term: "title"
+utterances:
+  theme: "github-light"
+  repo: "speedyleion/speedyleion.github.io"
+  issue-term: "title"
 
 # Exclude from processing.
 # The following items will not be processed, by default.
