@@ -5,19 +5,17 @@ date:   2021-01-20 20:17:03 -0800
 categories: cmake build-systems
 ---
 
-Code generation is a common task supported by build systems. It is generally
-recommended to leave any generated files in the build directory, assuming out
-of source builds.
-
-It is generlaly discouraged to generate files in the source directory and
+Code generation is a common task supported by build systems. 
+It is generally discouraged to generate files in the source directory and
 commit these generated files. However, there are times where one may need to
-commit the generated files:
+go against this guidance:
 - In some development environments, like highly regulated ones, it may be
   easier to review the generated file(s) than to take the steps necessary to
   approve a code generation tool.
 - One may want to distrubute these generated files for consumers, without
   forcing the consumers to utilze the code generation tool.
-- If you know of other reasons please post them. 
+
+(If you know of other reasons please post them.)
 
 Most build systems will connect any generated code files up to the clean
 target. This means that anytime someone runs ``my_build_system clean`` *all*
@@ -97,7 +95,7 @@ Caveats
   run the build commands. Since the header isn't advertising itself as
   generated to CMake, there is no way for Ninja to know to mark users of the
   header as out of date during the initial inspection of the build tree. One
-  can invoke the build twice, but this is error prone.
+  can invoke the build twice to work around this, but this is error prone.
 
 
 [add_custom_command]: https://cmake.org/cmake/help/latest/command/add_custom_command.html
