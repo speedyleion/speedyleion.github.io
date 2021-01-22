@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Reusing Nom Stream In Loop"
-date:   2021-01-22 10:42:03 -0800
+date:   2021-01-21 10:42:03 -0800
 categories: rust git nom
 ---
 
@@ -60,6 +60,19 @@ fn test_read_of_file_entry_leaves_remainder() {
     );
 }
 {% endhighlight %}
+
+This test passed, so clearly the function was returning the ``&[u8]`` slice
+after the file entry. I decided to focus on my attempt at re-using the
+variable name of ``contents``.
+{% highlight rust %}
+    let (contents, header) = Index::read_header(&buffer)?;
+    let mut entries = vec![];
+    for _ in 0..header.entries {
+        let (contents, entry) = Index::read_entry(&contents)?;
+        entries.push(entry);
+    }
+{% endhighlight %}
+
 
 [git-index]: https://git-scm.com/docs/index-format
 [nom]: https://docs.rs/nom/6.0.1/nom/
