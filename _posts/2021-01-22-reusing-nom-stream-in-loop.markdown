@@ -1,20 +1,15 @@
 ---
 layout: post
-title:  "Reusing Nom Stream In Loop"
-date:   2021-01-21 10:42:03 -0800
+title:  "Rust: Reusing Variable In Loop"
+date:   2021-01-21 19:42:03 -0800
 categories: rust git nom
 ---
 
-The [nom] crate is used in this post. The important thing to know about it
-is that the functions being created for parsing with [nom] take an input
-``&[u8]`` and return an ``IResult<&[u8], thing_parsed>``, where
-``thing_parsed`` depends on the function.
-
 The following chunk of code tries to parse a [git index][git-index] file. The
 ``Index::read_entry()`` function is meant to be reading out each file name
-and it's respective SHA form the git index. As written the code was actually
-reading out the first file entry over and over, fro the number of files in
-the index. The first file happend to be the ``.gitignore`` file.
+and it's respective SHA form the git index. The code was actually reading out
+the first file entry over and over, for the number of files in the index. The
+first file happend to be the ``.gitignore`` file.
 
 {% highlight rust %}
 pub fn new(path: &Path) -> Result<Index, GitStatusError> {
@@ -37,9 +32,21 @@ pub fn new(path: &Path) -> Result<Index, GitStatusError> {
 }
 {% endhighlight %}
 
-I had a couple of tests around ``Index::read_entry()``, but was missing one
-that ensured the returned stream from the parser function was after the
-parsed data, so I added it.
+The following line is meant to return the slice after the next entry and the
+next entry. However each time it was processed in the loop it did not appear
+to be updating ``contents`` to the location after the next entry.
+
+{% highlight rust %}
+let (contents, entry) = Index::read_entry(&contents)?; 
+{% endhighlight %}
+
+I had a couple of tests around ``Index::read_entry()``, but was missing a
+test that ensured the returned value was after the next entry, so I added it.
+I haven't had a chance to clean up the tests, there is a bit too much setup
+repeated in each one. The important thing to look at is the ``suffix``
+variable. It is placed after the file name in the ``u8`` vector, and the
+assert assures that the function returns the slice for the ``suffix``, as
+well as the file entry.
 
 {% highlight rust %}
 #[test]
@@ -62,17 +69,62 @@ fn test_read_of_file_entry_leaves_remainder() {
 {% endhighlight %}
 
 This test passed, so clearly the function was returning the ``&[u8]`` slice
-after the file entry. I decided to focus on my attempt at re-using the
-variable name of ``contents``.
+after the next entry. I decided to focus on how I had written my attempt at
+updating the value of ``contents``.
+
 {% highlight rust %}
-    let (contents, header) = Index::read_header(&buffer)?;
-    let mut entries = vec![];
-    for _ in 0..header.entries {
-        let (contents, entry) = Index::read_entry(&contents)?;
-        entries.push(entry);
-    }
+let (contents, header) = Index::read_header(&buffer)?;
+let mut entries = vec![];
+for _ in 0..header.entries {
+    let (contents, entry) = Index::read_entry(&contents)?;
+    entries.push(entry);
+}
 {% endhighlight %}
 
+With a bit of investigation I finally realized the issue is the [let]
+keyword. [let] declares new variables. Since the contents of the for loop is
+in a new block there is a new ``contents`` variable declared which shadows
+the original one. However each iteration the for loop's ``contents`` variable
+hasn't been created yet so it re-uses the outer scope's ``contents`` variable
+in the ``Index::read_entry``.
+
+I tried to resolve this issue by declaring ``entry`` and then assigning:
+
+{% highlight rust %}
+for _ in 0..header.entries {
+    let entry;
+    (contents, entry) = Index::read_entry(&contents)?;
+    entries.push(entry);
+}
+{% endhighlight %}
+
+However this resulted in the following compilation error:
+
+{% highlight rust %}
+   |
+88 |             (contents, entry) = Index::read_entry(&contents)?;
+   |             ----------------- ^
+   |             |
+   |             cannot assign to this expression
+   |
+   = note: destructuring assignments are not currently supported
+   = note: for more information, see https://github.com/rust-lang/rfcs/issues/372
+{% endhighlight %}
+
+It's nice that the compilation error directly links to the issue tracking
+the implementation of destructuring assignments.
+
+The final solution, create a local variable in the assignment and then assign
+that to the ``contents`` variable.
+
+{% highlight rust %}
+for _ in 0..header.entries {
+    let (local_contents, entry) = Index::read_entry(&contents)?;
+    entries.push(entry);
+    contents = local_contents;
+}
+{% endhighlight %}
 
 [git-index]: https://git-scm.com/docs/index-format
 [nom]: https://docs.rs/nom/6.0.1/nom/
+[let]: https://doc.rust-lang.org/std/keyword.let.html
