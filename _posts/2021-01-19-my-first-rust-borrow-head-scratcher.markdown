@@ -2,7 +2,7 @@
 layout: post
 title:  "My first rust borrow head scratcher"
 date:   2021-01-19 18:47:03 -0800
-categories: rust
+categories: rust git
 ---
 
 The Problem
