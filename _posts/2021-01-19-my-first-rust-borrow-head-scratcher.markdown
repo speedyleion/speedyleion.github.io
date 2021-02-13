@@ -11,7 +11,7 @@ The Problem
 I'm fairly new to rust, having only read through the [rust book][rust-book]
 and a bit of the [nom docs][nom].
 
-I spent more time than I care to document trying to debug the following
+I spent more time than I care to admit trying to debug the following
 borrow issue:
 {% highlight rust %}
 90 |         let (contents, header) = Index::read_header(&buffer)?;
@@ -170,7 +170,7 @@ Update (2021-01-20)
 The same night, after I wrote this post, my google fu uncovers a stack
 overflow question someone had almost two years prior. The SO question is the
 same underlying issue,
-https://stackoverflow.com/questions/55184864/nom-parser-borrow-checker-issue.
+[https://stackoverflow.com/questions/55184864/nom-parser-borrow-checker-issue].
 The author of the post has a much more consise example of the issue and I'm
 assuming the answer is from a more experienced rust person.
 
@@ -180,3 +180,4 @@ assuming the answer is from a more experienced rust person.
 [bmp-format]: https://en.wikipedia.org/wiki/BMP_file_format
 [lifetimes]: https://doc.rust-lang.org/1.9.0/book/lifetimes.html
 [question-mark]: https://doc.rust-lang.org/edition-guide/rust-2018/error-handling-and-panics/the-question-mark-operator-for-easier-error-handling.html
+[https://stackoverflow.com/questions/55184864/nom-parser-borrow-checker-issue]: https://stackoverflow.com/questions/55184864/nom-parser-borrow-checker-issue
