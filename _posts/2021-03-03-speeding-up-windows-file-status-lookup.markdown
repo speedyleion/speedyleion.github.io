@@ -5,6 +5,10 @@ date:   2021-03-03 20:23:03 -0800
 categories: rust git
 ---
 
+> Some of this information has been revised. Be sure to read updated finding
+  in [Efficientlly Walking File Directories in Rust (Part 2)]({% post_url
+  2021-04-25-walking-file-directories-in-rust-part-2 %}).
+
 File modification time, or `mtime` is a common value used to efficiently tell
 if a file has changed. 
 
