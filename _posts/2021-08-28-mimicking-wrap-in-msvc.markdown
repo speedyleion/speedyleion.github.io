@@ -85,7 +85,9 @@ This looks promising, however trying to link against the copied library results 
 
     objcopy_foo.lib : warning LNK4003: invalid library format; library ignored
 
-Time to punt on [llvm-objcopy][llvm-objcopy].
+~~Time to punt on [llvm-objcopy][llvm-objcopy]~~.
+
+> See Update 2021-08-29 below
 
 MSVC Tools
 ==========
@@ -248,6 +250,49 @@ This example is fairly simple, so it more testing would need to be done to flush
 out any problems that got overlooked.  I have a feeling it may require a bit
 more diligence versus being able to leverage the linker for wrapping functions.
 
+Update 2021-08-29
+=================
+
+[llvm-objcopy][llvm-objcopy] Revisited
+--------------------------------------
+
+After sleeping on it, and also running accross other's successful use of GNU's
+objcopy with Windows binaries, I realized where I made a mistake with my usage
+of [llvm-objcopy][llvm-objcopy].
+
+One may notice the name is *obj*copy, implying object file coping.  While my
+initial attempt was trying to copy a library file.  Changing the command to:
+
+    llvm-objcopy.exe --redefine-sym=foo=__real_foo foo.cpp.obj objcopy_foo.obj
+
+and then rebuilding the library with:
+
+    LIB objcopy_foo.obj /OUT:objcopy_foo.lib
+
+I was able to compile and link to the library.  Note that the command used
+`__real_foo` for the name and thus the usages of `real_foo` for the MSVC
+toolchain solution had to be renamed.
+
+[EDITBIN][EDITBIN] Revisited
+----------------------------
+
+The [EDITBIN][EDITBIN] version of the solution is a little concerning in that
+there was a warning, `warning LNK4039: section 'foo' specified with /SECTION
+option does not exist`.  That warning doesn't sit well with this developer.
+
+Doing some googling it looks like Windows object file format is
+[PE-COFF][PE-COFF].  Doing a quick perusal of the 
+[section documentation][PE-section-headers], it mentions that the name field is
+8 bytes.  When the name is longer than 8 bytes there is a lookup operation.  I
+realized that `__real_foo` exceeds 8 ASCII bytes, while `real_foo` just fits.
+So I attempted to rename using [EDITBIN][EDITBIN] with a name of
+`a_really_long_foo` and I got the same section name disappearance from when I tried
+to use [EDITBIN][EDITBIN] to rename to `__real_foo`.  I also attempted to link
+after these renames to be sure and the symbols were not found.
+[llvm-objcopy][llvm-objcopy] *does* successfully rename to `__real_foo` as well
+as `a_really_long_foo`.
+
+
 [LIB]: https://docs.microsoft.com/en-us/cpp/build/reference/lib-reference?view=msvc-160
 [objcopy]: https://web.mit.edu/gnu/doc/html/binutils_4.html
 [llvm-objcopy]: https://llvm.org/docs/CommandGuide/llvm-objcopy.html
@@ -255,3 +300,5 @@ more diligence versus being able to leverage the linker for wrapping functions.
 [EDITBIN]: https://docs.microsoft.com/en-us/cpp/build/reference/editbin-reference?view=msvc-160
 [DUMPBIN]: https://docs.microsoft.com/en-us/cpp/build/reference/dumpbin-reference?view=msvc-160
 [ALTERNATENAME]: https://devblogs.microsoft.com/oldnewthing/20200731-00/?p=104024
+[PE-section-headers]: https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#section-table-section-headers
+[PE-COFF]: https://docs.microsoft.com/en-us/windows/win32/debug/pe-format
