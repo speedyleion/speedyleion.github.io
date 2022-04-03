@@ -87,6 +87,7 @@ git clone --branch linux-msft-wsl-5.10.y --depth 1 https://github.com/microsoft/
 cd WSL2-Linux-Kernel
 zcat /proc/config.gz > .config
 make -j $(nproc)  
+sudo make -j $(nproc) modules_install
 cd /lib/modules
 sudo ln -s 5.10.102.1-microsoft-standard-WSL2+/ 5.10.102.1-microsoft-standard-WSL2
 ```
