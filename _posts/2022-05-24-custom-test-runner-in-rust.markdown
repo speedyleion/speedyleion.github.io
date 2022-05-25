@@ -298,8 +298,12 @@ test discovery. One is left building up the rest of the framework:
 The custom test framework attributes also have to be in the root `lib.rs` or
 `main.rs` of the crate.  These can't be hidden down in a test framework crate.
 It does seem that one can add a test framework as a dev dependency and the crate
-will only be looked up when running tests. So one could do the following without
-polluting the non test builds:
+will only be looked up when running tests. So one can reference the test runner
+function from a framework crate without polluting the non test builds.
+
+For example the below could be placed at the top of a crate's `lib.rs`, where
+`my_test_framework` is a crate that has `my_runner` in it.  `my_test_framework`
+would only need to be a dev dependency in the crates toml file.
 
 ```rust
 #![feature(custom_test_frameworks)]
