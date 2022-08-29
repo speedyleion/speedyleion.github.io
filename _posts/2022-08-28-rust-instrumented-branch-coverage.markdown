@@ -13,9 +13,6 @@ I was interested to see how coverage for the `?` operator was handled.
 
 > This is available in `one.rs` at, https://github.com/speedyleion/rust-coverage
 
-<details>
-  <summary>Minimal rust example</summary>
-
 ```rust
 #[derive(Debug, PartialEq)]
 pub enum Error {
@@ -59,8 +56,6 @@ mod tests {
     }
 }
 ```
-
-</details>
 
 I used a modified version of the instructions available at
 <https://doc.rust-lang.org/rustc/instrument-coverage.html> to test out.
@@ -129,9 +124,6 @@ I located [cargo-llvm-cov][cargo-llvm-cov] published by
 [taiki-e][https://github.com/taiki-e].  Using the action settings provided in
 the repo's `README.md`.
 
-<details>
-  <summary>Example action settings</summary>
-
 ```yaml
 name: Coverage
 
@@ -157,8 +149,6 @@ jobs:
           files: lcov.info
           fail_ci_if_error: true
 ```
-
-</details>
 
 Similar to [grcov][grcov], the resultant coverage run didn't show the missing
 branch at `?`.  It did show the missing line for the `if` in `baz()`, but it did
@@ -190,10 +180,9 @@ would consist of introducing new counters that just "reference" existing
 counters for the true/false branch.
 
 I want to look through
-<https://releases.llvm.org/16.0.0/docs/CoverageMappingFormat.html> and see if
-there is a way to derive or convert the region information into `lcov`s branch
-format. It may be that the information is lost by the time we get to the llvm
-output format.
+<https://www.llvm.org/docs/CoverageMappingFormat.html> and see if there is a way
+to derive or convert the region information into `lcov`s branch format. It may
+be that the information is lost by the time we get to the llvm output format.
 
 [instrument coverage]: https://doc.rust-lang.org/rustc/instrument-coverage.html 
 [codecov]: https://codecove.io
