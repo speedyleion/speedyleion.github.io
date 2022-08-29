@@ -169,7 +169,7 @@ actually being seen by `llvm-cov show`.
 Summary
 =======
 
-It seems that branch based source code coverage is not currently supported by
+Branch based source code coverage is not currently supported by
 rust's [instrumentation coverage][instrument coverage].  
 
 Per the comment <https://github.com/rust-lang/rust/issues/79649#issuecomment-1121561058> 
