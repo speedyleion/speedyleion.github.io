@@ -78,7 +78,7 @@ Comparing to the C function we can see there are a few less gotchas.
 2. The compiler will ensure that `name` has a valid length.
 3. `thing` can not be a null pointer. The compiler will ensure this.
 4. `thing` will have to be initialized prior to the function call. The compiler
-   will ensure this. Initializing by teh caller could be a bad thing as it puts
+   will ensure this. Initializing by the caller could be a bad thing as it puts
    more burden on the caller and it could hurt performance by setting values
    that will be overwritten in the `get_thing` call.
 
