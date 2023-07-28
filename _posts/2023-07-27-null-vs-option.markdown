@@ -18,92 +18,37 @@ Let's dig into C and it's use of null pointers. Here we have a function that
 returns a pointer to a `cool_thing`. 
 
 ```c
-cool_thing * foo();
+int * foo();
 ```
 
-Often in C API's, one will return a null pointer when `cool_thing` couldn't be
-created or found. This means a user of this API will generally need to have a
+Often in C API's, one will return a null pointer when `foo()` failed to derive
+the `int *`.  This means a user of this API will generally need to have a
 guard clause similar to:
 
 ```c
-cool_thing * my_thing = foo();
-if(my_thing == 0) {
+int * my_value = foo();
+if(my_value == 0) {
     return SOME_ERROR;
 }
 
-return do_stuff(my_thing);
+return do_stuff(my_value);
 ```
 
 A problem that crops up is in the implementation of `do_stuff()`. It is most
-likely getting a pointer to a `cool_thing`. Should it have a guard clause as
-well? We could document that `do_stuff()` assumes it's `cool_thing` is not null,
+likely getting a pointer to an `int`. Should it have a guard clause as
+well? We could document that `do_stuff()` assumes it's `int *` is not null,
 but that requires diligence from all the users. There may also be cases where we
 want to pass a null pointer to `do_stuff()` or an equivalent function.
 
 ```c
-error_type do_stuff(cool_thing * thing) {
-    if(thing == 0) {
+error_type do_stuff(int * value) {
+    if(value == 0) {
         return SOME_ERROR;
     }
 
     // actual logic
 }
 ```
-
-One way we could work around this is to define a containing type that is only
-meant to hold a non null pointer. We could then pass that around.
-
-```c
-typedef struct {
-    cool_thing * thing;
-} always_valid_cool_thing_pointer;
-
-error_type caller() {
-    always_valid_cool_thing_pointer valid_thing;
-    cool_thing * my_thing = foo();
-    if(my_thing == 0) {
-        return SOME_ERROR;
-    }
-
-    valid_thing.thing = my_thing;
-    return do_stuff(valid_thing);
-}
-```
-
-Now `do_stuff()` takes an `always_valid_cool_thing_pointer`. This would require
-a convention that all developers adhered to in order to work effectively. There
-are no guarantees that someone filled it out correctly or doesn't inadvertently
-null it out, but it better communicates the intent that the function does *not*
-take a null pointer. 
-
-We could make it a bit more ergonomic and create a constructor:
-
-```c
-always_valid_cool_thing_pointer cool_thing_to_pointer(cool_thing * thing) {
-    always_valid_cool_thing_pointer valid_thing;
-    runtime_assert(thing != 0);
-    valid_thing.thing = thing;
-    return valid_thing;
-}
-```
-
-I put a `runtime_assert()` in the constructor. That would need to be system
-specific as C's `assert()` macro is a debug only mechanism. There are some
-highly regulated environments where a runtime assert is generally discouraged,
-however in many operating systems accessing a null pointer will most likely stop
-the process anyway so it's probably not too bad to have here.
-
-One could try to make this more reusable and use a `void *`:
-
-```c
-typedef struct {
-    void * item;
-} always_valid_pointer;
-```
-
-The downside to this is that the type info is lost and one would need to cast it
-back to the expected type. It could probably be made a bit more ergonomic with
-some macros.
 
 # Rust's `Option<T>`
 
