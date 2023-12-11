@@ -5,7 +5,7 @@ date:   2023-12-09 19:05:03 -0800
 categories: rust build
 ---
 
-This is a bit long as it's a summary of my one and half day debugging adventure.
+This is a bit long as it's a summary of my day and a half debugging adventure.
 I wanted to throw as much info out there to communicate that debugging isn't
 often a 5 minute find it and fix it process.
 
@@ -40,18 +40,22 @@ The steps were more or less:
 <A_DIFFERENT_MD5_VALUE>
 ```
 
-Fortunately I was quick to think of checking out the tip of our mainline to
-ensure I had the correct steps. To my surprise our mainline could not provide a
+> Note: I used `md5sum` as it was quick and at hand. We do **not** use MD5 in
+> our binary signing process.
+
+I decided to jump back to the tip of our mainline to make sure I was doing the
+build process correctly. To my surprise our mainline could not provide a
 reproducible binary. 
 
 I wanted to see if I could tell what was different between the binaries. I ran
 across [elf_diff][elf_diff]. As the name implies it allows one to diff elf
 binaries. Using it I could see that some [serde][serde] implementations appeared
-to be different. For many the main change was around function address values. I
-assumed this was due to surrounding functions increasing or decreasing in size
-changing the function addresses. A couple of functions I found had some
-different assembly instructions, but I'm not that fluent in assembly to quickly
-understand what it might mean. I decided to shelve that for now.
+to be different. For many of the serde implementations the only change was
+around function address values. I assumed this was due to surrounding functions
+increasing or decreasing in size changing the function addresses. A couple of
+functions I found had some different assembly instructions, but I'm not that
+fluent in assembly to quickly understand what it might mean. I decided to shelve
+that for now.
 
 I thought for a bit, and was pretty sure our latest release had reproducible
 binaries. Running the above steps on the latest released version did indeed
@@ -60,12 +64,11 @@ provide a reproducible binary.
 So somewhere between our latest release and our current mainline we lost
 reproducible rust builds.
 
-I was familiar with many of changes that happened since the latest release. I
-recalled we had bumped rust versions, so I decided to look there first. I
-tried to revert the rust version bump at the tip of mainline. I spent
-probably 30 minutes to an hour trying to revert the rust version. Then I
-realized I should just check out the commit prior to the rust version bump and
-test build reproducibility there.
+I recalled we had bumped rust versions recently in the mainline, so I decided to
+look there first. I tried to revert the rust version bump at the tip of
+mainline. I spent probably 30 minutes to an hour trying to revert the rust
+version. Then I realized I should just check out the commit prior to the rust
+version bump and test build reproducibility there.
 
 The commit at the old rust version also failed to provide reproducible builds. I
 tried to think of what other changes could be the likely culprit. As I was
@@ -88,15 +91,15 @@ piece of the new crate. Subsequent commits hooked up the rest of this new crate.
 
 Working on the broken commit, I tried to remove small pieces of the integration
 and rebuild looking for reproducibility. For instance pulling in the new crate
-resulted in cargo updating serde, and since I saw those implementations in
-`elf_diff` I tried to pin the serde version back to see what the outcome might
-be.  Much like my attempt to revert the rust versions, this wasn't a good
-approach. I realized it would be better to start from the commit prior, which
-worked, and then slowly add small pieces of the change until I lose reproducible
-builds. The reason for this is that if you start from a broken version and try
-to undo things, it's possible that when you go to test, you test incorrectly and
-it's your testing method that is the cause of a failure instead of the actual
-change.
+resulted in cargo updating serde, and since I saw those implementations had
+changed in `elf_diff` I tried to pin the serde version back to see what the
+outcome might be.  Much like my attempt to revert the rust versions, this wasn't
+a good approach. I realized it would be better to start from the commit prior,
+which worked, and then slowly add small pieces of the change until I lose
+reproducible builds. The reason to start from a working commit is that it's
+often easier to identify the one thing that will break the build. If one tries
+to work from a broken commit and get it to the working state, there may be
+multiple things that need to be tweaked and it's easy to miss this combination.
 
 As mentioned this new crate was a wrapper around a C library. We followed the
 [sys-packages][sys] recommendation. Which means we actually have two crates; a
@@ -105,12 +108,12 @@ which does some very basic mapping of C to rust. In the `foo-sys` crate we use
 [bindgen][bindgen] to generate the rust interface from the C headers. We also
 derived `Serialize` and `Deserialize` from serde on some of the `foo-sys` types.
 
-Again latching on to the `serde` functions in the `elf_diff` output, I decided
-to use [cargo-expand][cargo-expand] on `foo-sys`. `cargo-expand` will take rust
-files and expand all of the macros in those files.  This is similar to looking
-at C's pre-processed output. I was hoping to see a giant on/off switch in the
-wrong position in the output, but nothing stood out to me. I ran it twice and
-compared the output, it was the same each time. 
+Again latching on to the changed `serde` implementations in the `elf_diff`
+output, I decided to use [cargo-expand][cargo-expand] on `foo-sys`.
+`cargo-expand` will take rust files and expand all of the macros in those files.
+This is similar to looking at C's pre-processed output. I was hoping to see a
+giant on/off switch in the wrong position in the output, but nothing stood out
+to me. I ran it twice and compared the output, it was the same each time. 
 
 I realized that the `foo` crate is really the one used by the clients and it
 hides the `foo-sys` crate from them. So I also ran `cargo-expand` on it. Again 
@@ -183,9 +186,9 @@ This means that the hashing algorithm is randomly seeded on each run and thus
 the hash values are not consistent between runs. The result was that the order
 of the derives on the generated output of `bindgen` would vary between builds.
 
-For example one can run the following code and half the time the assert will
-cause a panic. Unscientific, but I can usually get a pass or panic within four
-runs.
+To see this inconsistent hashing behavior in action one can run the following
+code and half the time the assert will cause a panic. You may need to run this 4
+or more times to see a change in output.
 
 <iframe width="800px" height="500px" src="https://play.rust-lang.org/?version=stable&mode=debug&edition=2021&code=use+std%3A%3Acollections%3A%3AHashSet%3B%0Afn+main%28%29+%7B%0A++++let+mut+derives+%3D+HashSet%3A%3Anew%28%29%3B%0A++++derives.insert%28%22Debug%22%29%3B%0A++++derives.insert%28%22Clone%22%29%3B%0A++++assert_eq%21%28derives.into_iter%28%29.collect%3A%3A%3CVec%3C_%3E%3E%28%29%2C+vec%21%5B%22Debug%22%2C+%22Clone%22%5D%29%3B%0A%7D"></iframe>
 
@@ -196,11 +199,34 @@ To fix this inconsistent order one can:
 
 # Summary
 
+The use of `HashSet`, with the default hasher, during the code generation
+resulted in the order of the derives changing between builds. The compiler
+most likely expands the derive macros in the order they are written. This
+results in different generated code based on the order of the derive macros.
+
+This first snippet has `Debug` before `Clone`.
+
+```rust
+#[derive(Debug, Clone)]
+pub MyStruct {
+    a: u32,
+    b: float
+}
+```
+
+This next snippet has `Clone` before `Debug`, it will result in a different
+binary than the previous snippet.
+
+```rust
+#[derive(Clone, Debug)]
+pub MyStruct {
+    a: u32,
+    b: float
+}
+```
+
 To ensure reproducible builds avoid direct use of the default hasher in
 generated code.
-
-When debugging try to start from a good known state and then slowly bring it
-into the error state.
 
 [btree_set]: https://doc.rust-lang.org/stable/std/collections/struct.BTreeSet.html
 [sort]: https://doc.rust-lang.org/std/vec/struct.Vec.html#method.sort
