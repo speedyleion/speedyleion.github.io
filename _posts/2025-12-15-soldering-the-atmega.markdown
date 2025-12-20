@@ -26,8 +26,6 @@ into the Atmega board and keep the long side for plugging into a bread board.
 
 ![Image of both sides of Atmega board and pin headers](/assets/atmega32u4-and-headers.png)
 
-<!-- <img src="/assets/atmega32u4-and-headers.jpg" alt="Picture of left-handed EX-G by someone who doesn't take good pictures" style="max-width: 500px; width: 100%; height: auto;"> -->
-
 Below is an image of what it looks like with the pin headers inserted into the
 Atmega board. The top of the Atmega board is visible with the short side of the
 pin headers protruding through the top of the board.
