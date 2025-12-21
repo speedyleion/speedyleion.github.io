@@ -1,0 +1,23 @@
+version = 1
+revision = 1
+requires-python = ">=3.13"
+
+[[package]]
+name = "diagrams"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "schemdraw" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "schemdraw", specifier = ">=0.22" }]
+
+[[package]]
+name = "schemdraw"
+version = "0.22"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/0e/3d2a9c2541ced42877e8b6049fb17c093329ccb81344529dc12a33d4c118/schemdraw-0.22.tar.gz", hash = "sha256:59d1fcfe817f93f8bfc37a3f4645186dc03316bbcfd9ac68804fd6cb3aa69f51", size = 10881350 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/ab/b281071bc11555670a82c538e4be35e7f5ad5e4cb4de7ac356a05a4b2c6a/schemdraw-0.22-py3-none-any.whl", hash = "sha256:fb294fe086b89a7dc9bedce43dc39014a9b9e369864eab438f22009c9f0e1175", size = 148359 },
+]
