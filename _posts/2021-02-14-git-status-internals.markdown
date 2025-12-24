@@ -34,7 +34,7 @@ I created a simple repo with one file:
     git init
     echo "some text" > foo.txt
     git add foo.txt
-    git commit -m "commiting one file"
+    git commit -m "committing one file"
 
 This simple repo allowed be to minimize the debugging effort. I mean who
 want's to walk through 90k file entries?
@@ -102,7 +102,7 @@ on. So instead I search for `sha` in the [libgit2] repo and found
 `git_hash_sha1_update()`. `git_hash_sha1_update()` has multiple
 implementations depending on compiler settings/platform so I decided to set a
 breakpoint in `git_hash_update()` where it called `git_hash_sha1_update()` to
-ensure I didn't miss the occurence.
+ensure I didn't miss the occurrence.
 
 {% highlight c %}
 int git_hash_update(git_hash_ctx *ctx, const void *data, size_t len)
@@ -128,7 +128,7 @@ possibility.
 ![git_hash_update() callstack](/assets/libgit2_object_hash.png)
 
 Looking more closely at the call stack one can see the function
-[git_reference_peel()]. Jumping to the invokation location one can see:
+[git_reference_peel()]. Jumping to the invocation location one can see:
 
 {% highlight c %}
     if ((error = git_reference_peel(&obj, head, GIT_OBJECT_TREE)) < 0)
@@ -169,7 +169,7 @@ It may be good to stop and discuss a little bit about how
 sorted version of each directory in the index and working tree. This sorted
 approach allows it to quickly see when a file is extra in the index or the
 working tree. When a file exists in the index, but not in the working tree,
-it is in a delted state. When a file exists in the working tree but not the
+it is in a deleted state. When a file exists in the working tree but not the
 index, it is in an untracked.
 
 The important code block to notice in [git_diff__from_iterators()] is when a
@@ -184,7 +184,7 @@ file name exists in both the index and working tree.
 {% endhighlight %}
 
 Debugging into `handle_matched_item()` one quickly walks into
-[maybe_modifed()]. [maybe_modified()] was the function I was looking for. I
+[maybe_modified()]. [maybe_modified()] was the function I was looking for. I
 probably walked the debugger through this function 10 times with `foo.txt`
 not modified and it modified in different ways to try and understand what was
 going on.  

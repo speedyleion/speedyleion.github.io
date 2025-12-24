@@ -114,7 +114,7 @@ the output. The [once()][once] iterator is chained with a [repeat()][repeat]
 iterator of the real separator. Using a [repeat()][repeat] ensures we have a
 separator for however many items may be in the slice.
 
-This approach removes the condtion in the for loop, but it can take a bit of a
+This approach removes the condition in the for loop, but it can take a bit of a
 mental shift if one is used to the if conditions that's needed in C for loops.
 
 # `once()` with default alternative
@@ -136,7 +136,7 @@ pub fn once_join(slice: &[&str]) -> String {
 ```
 
 This example creates an iterator of one itme being an empty string. The iterator
-will be exausted after the first time it's called and then the `unwrap_or_else`
+will be exhausted after the first time it's called and then the `unwrap_or_else`
 will provide the value we'll use in all other instances.
 
 Similar to the zip iterator this may seem a bit foreign to those coming from C

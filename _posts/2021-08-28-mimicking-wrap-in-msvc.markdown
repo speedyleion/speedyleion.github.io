@@ -11,7 +11,7 @@ categories: c windows msvc
 GCC and Clang have a linker flag called `--wrap`.  This flag allows one to
 intercept a function at link time.
 
-Let us say you have a funciton `foo()`.  If you use the linker flag
+Let us say you have a function `foo()`.  If you use the linker flag
 `--wrap=foo`, then the linker will re-direct all calls to `foo()` with calls
 to `__wrap_foo()`.  The linker will also rename the implementation of
 `foo()` as `__real_foo()`.  This means that one will need to implement a
@@ -54,7 +54,7 @@ const char *foo(int option) {
 }
 {% endhighlight %}
 
-> The header `foo.h` just has the declartion for the function `foo()`.
+> The header `foo.h` just has the declaration for the function `foo()`.
 
 When I dump this library file using [llvm-objdump][llvm-objdump] the function
 `foo` shows up in the output:
@@ -112,7 +112,7 @@ Extracting the original object file
 It may be that I couldn't figure it out, but it doesn't appear that you can
 extract a function with the `/EXTRACT` flag it appears to only extract object
 files.  One must know the exact name of the object file, and since I used CMake
-to build, it had an intersting name.  This name also showed up in the
+to build, it had an interesting name.  This name also showed up in the
 [llvm-objdump][llvm-objdump] operation:
 
     LIB /EXTRACT:CMakeFiles\foo.dir\foo.cpp.obj foo.lib
@@ -256,7 +256,7 @@ Update 2021-08-29
 [llvm-objcopy][llvm-objcopy] Revisited
 --------------------------------------
 
-After sleeping on it, and also running accross other's successful use of GNU's
+After sleeping on it, and also running across other's successful use of GNU's
 objcopy with Windows binaries, I realized where I made a mistake with my usage
 of [llvm-objcopy][llvm-objcopy].
 

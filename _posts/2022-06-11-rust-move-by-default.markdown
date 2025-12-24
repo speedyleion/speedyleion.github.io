@@ -172,7 +172,7 @@ hash_by_value:                          # @hash_by_value
 Where things really start to show up is when one looks at the usage of the
 functions in `my_hasher()` in the [Compiler Explorer][compiler explorer] samples.
 The pass by pointer version has none of the `movups` instructions that were so
-prevelant in the pass by value.
+prevalent in the pass by value.
 
 Rust Pass by Value (Move)
 =========================

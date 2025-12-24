@@ -61,7 +61,7 @@ status`.
 I decided that it was worth investigating how to speed this up. Looking at
 the profiling of running [win-git-status] every file was being opened.  See 
 [Profiling Rust On Windows]({% post_url 2021-02-28-profiling-rust %}). It
-seemed unecessary to be opening every file just for the file modification
+seemed unnecessary to be opening every file just for the file modification
 time.  
 
 > I'll admit I don't know the underlying meaning of "opening" on Windows. So
@@ -131,7 +131,7 @@ entry at a time. Looking more closely at the interface, it's possible to pass
 a buffer and [NtQueryDirectoryFile] will provide an offset to subsequent
 entries in the buffer. This means right now the prototype implementation is
 calling back 90k times to get each file entry in the directory. While using a
-buffer it's possible to minimze these calls and possible user to kernel
+buffer it's possible to minimize these calls and possible user to kernel
 context switches.
 
 If one looks closely at the implementation of [fscache], it is passing a
@@ -161,14 +161,14 @@ for entry in walk_dir {
 }
 {% endhighlight %}
 
-For those unfamiliar with [jwalk] it may not be apparrent what's happening,
+For those unfamiliar with [jwalk] it may not be apparent what's happening,
 so we'll update some comments
 
 {% highlight rust %}
 let walk_dir = WalkDirGeneric::<((usize),(bool))>::new("foo")
     .process_read_dir(|depth, path, read_dir_state, children| {
         // per directory processing
-        // happens on a separate thread per directroy.
+        // happens on a separate thread per directory.
     });
 
 for entry in walk_dir {

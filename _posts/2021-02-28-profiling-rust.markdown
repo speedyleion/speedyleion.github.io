@@ -14,7 +14,7 @@ was at ~6 seconds.  This is no where near the 0.340 seconds I was getting from `
 
 Doing some quick googling led me to the `profiling` chapter of [The Rust
 Performance Book][perf-book]. Almost every tool on there was *nix based.
-Doing some more googling I ran accross this [reddit post][wpa-reddit] which
+Doing some more googling I ran across this [reddit post][wpa-reddit] which
 mentions using the [Windows Performance Analyzer (WPA)][WPA].
 
 I had heard of [WPA] before from reading [Finding build bottlenecks with C++ Build Insights](https://devblogs.microsoft.com/cppblog/finding-build-bottlenecks-with-cpp-build-insights/).
@@ -33,7 +33,7 @@ builds will often skip optimizations to make debugging easier to do. Since
 the optimizations may not be performed what you profile in debug may not
 actually exist in release.
 
-In rust one simpley needs at add the `debug=true` option to the `Cargo.toml`
+In rust one simply needs at add the `debug=true` option to the `Cargo.toml`
 file:
 
 {% highlight rust %}
@@ -81,7 +81,7 @@ determining where any bottlenecks are at.
 In order to get more information about where in the process any bottlenecks
 are at one needs to provide [WPA] with the debug symbols. On Windows when one
 builds a rust exe with debug symbols there is a `pdb` file with the same name
-created next to the exe. This file contians the symbols needed by [WPA]. In
+created next to the exe. This file contains the symbols needed by [WPA]. In
 order to tell [WPA] where to find this file one should choose the menu option
 "Trace -> Configure Symbol Paths".
 

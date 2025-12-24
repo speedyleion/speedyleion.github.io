@@ -58,7 +58,7 @@ constexpr auto match(std::string_view sv) noexcept {
 The Code Implementation
 =======================
 
-Modifying the example provided by the libary's readme I came up with:
+Modifying the example provided by the library's readme I came up with:
 
 {% highlight c++ %}
 #include "ctre.hpp"
@@ -102,7 +102,7 @@ constexpr auto match(std::string_view sv) noexcept {
 }
 {% endhighlight %}
 
-Admitedly I don't fully understand ``constexper`` other than it can result in
+Admittedly I don't fully understand ``constexper`` other than it can result in
 compile time evaluation. 
 
 This failed to compile on MSVC with compiler error [C2131][C2131].
@@ -134,7 +134,7 @@ int main(){
 {% endhighlight %}
 
 Though the ``"wrong_string"`` will cause a compiler failure, you can comment it
-out to see that the ``"3139-00-121-6210"`` succesfully compiles.
+out to see that the ``"3139-00-121-6210"`` successfully compiles.
 
 
 [NSN]: https://en.wikipedia.org/wiki/NATO_Stock_Number

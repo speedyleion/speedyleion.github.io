@@ -156,7 +156,7 @@ process's console.
 `stderr`, then reopens them to output to [`CONOUT$`][CONOUT].
 [`CONOUT$`][CONOUT] is a Windows specific filename for the current console.
 
-Sumarizing; this attaches the program to the parent's console and redirects
+Summarizing; this attaches the program to the parent's console and redirects
 `stdout` and `stderr` to the parent console.
 
 Running the tests with this solution results in:
@@ -231,7 +231,7 @@ Errors while running CTest
 ```
 
 For those unfamiliar with [ctest] this may seem expected, however the purpose of
-[ctest] is to run multiple tests and provide a test summary.  By defualt [ctest]
+[ctest] is to run multiple tests and provide a test summary.  By default [ctest]
 shouldn't be providing individual test case failures.  The expected output from
 [ctest] is:
 
@@ -302,7 +302,7 @@ Errors while running CTest
 ```
 
 If we go back and run the test program directly from the command line we
-still get the full [Catch2] ouptut.
+still get the full [Catch2] output.
 
 Summary
 =======

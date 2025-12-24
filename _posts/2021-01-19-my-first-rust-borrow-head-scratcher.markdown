@@ -171,7 +171,7 @@ The same night, after I wrote this post, my google fu uncovers a stack
 overflow question someone had almost two years prior. The SO question is the
 same underlying issue,
 [https://stackoverflow.com/questions/55184864/nom-parser-borrow-checker-issue].
-The author of the post has a much more consise example of the issue and I'm
+The author of the post has a much more concise example of the issue and I'm
 assuming the answer is from a more experienced rust person.
 
 [rust-book]: https://doc.rust-lang.org/book/ 

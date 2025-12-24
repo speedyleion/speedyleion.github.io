@@ -56,7 +56,7 @@ Deeper into [fd]
 The speed of [fd] compared to `git status` was another surprise to me. I
 thought for sure it would have outperformed `git status`, yet it's almost 3
 to 4 times slower. So I took a little detour trying to figure out if it was
-something with [fd] or somethign I was doing (TL;DR it was me). I don't
+something with [fd] or something I was doing (TL;DR it was me). I don't
 recall where I ran across it, but I saw someone doing metrics by redirecting
 to `/dev/null`. So I gave `/dev/null` a try.
 
@@ -87,7 +87,7 @@ Using values from 6 to 12 for the `-j` flag often hovered between 0.390s and
 Without looking directly at the code, my guess would be that [fd] uses as
 many threads as the system has available.
 
-It occured to me that if searching for everything and redirecting to a
+It occurred to me that if searching for everything and redirecting to a
 physical file was so time consuming, maybe there was a decent amount of time
 spent just building up the list of files. I mean it's probably some kind of
 vector that has to keep growing as files are added, thus causing memory
@@ -162,7 +162,7 @@ knowledge fully leveraging the parallel interface may take a while.
 [jwalk]
 -------
 
-[jwalk] almost flew under my radar. It can provide a nice interator
+[jwalk] almost flew under my radar. It can provide a nice iterator
 interface, while doing the walking in parallel.
 
 {% highlight rust %}
@@ -206,7 +206,7 @@ Conclusion
 This was a bigger detour than I probably should have taken. It is probably
 walking the line, if not outright, premature optimization. I don't even
 have an implementation of building up a git worktree, yet I'm already
-profiling it. Most of the crates support a visitor pattern and so it probalby
+profiling it. Most of the crates support a visitor pattern and so it probably
 doesn't matter too much which one is initially chosen as long as it isn't
 tightly coupled.
 

@@ -32,7 +32,7 @@ going back years, so we want to make it easy for developers to jump back and
 forth between branches without having to directly interact with too many
 oddities of each branch.
 
-All that to say, I would like to avoid devlopers having to do:
+All that to say, I would like to avoid developers having to do:
 ```
     poetry run foo.py make-coffee
 ```
@@ -157,7 +157,7 @@ class ArgvArgs(RawArgs):
             argv = list(sys.argv)
 {% endhighlight %}
 
-There is the `sys.argv` I was looking for.  It looks like if nothign is passed
+There is the `sys.argv` I was looking for.  It looks like if nothing is passed
 to the `ArgvArgs()` constructor than `sys.argv` will be used.  However one can
 pass in a list of arguments to not use `sys.argv`.
 
@@ -195,13 +195,13 @@ Application().run(argv)
 The Results
 -----------
 
-First I tried to run `foo.py` directoy with python and [poetry][poetry] to
+First I tried to run `foo.py` directory with python and [poetry][poetry] to
 verify my logic.
 Running `foo.py` directly with python resulted in the expected `"NO VENV SET"`.
 Trying to run `foo.py` directly with [poetry][poetry] via `poetry run foo.py`
 failed.  It looks like [poetry][poetry] will try to run this as an application,
 so I had to change my command slightly to `poetry run python foo.py`.  Adding
-`python` to the command resulted in outputing the path to a virtual environment
+`python` to the command resulted in outputting the path to a virtual environment
 in my home directory.
 
 > In retrospect I failed to read the poetry documentation correctly.  If one
@@ -246,7 +246,7 @@ def launch(script_name):
     sys.exit(Application().run(argv))
 {% endhighlight %}
 
-`bar.py` is now a module with functions and it will no longer be invokable
+`bar.py` is now a module with functions and it will no longer be invocable
 directly from the command line.  It has a new function `launch()`, which is
 provided the name of the script to launch.  Passing in the script is important,
 as this will prevent circular dependencies and make the bootstrapper re-usable
@@ -256,7 +256,7 @@ One important piece to note is the `VIRTUAL_ENV` check, this should prevent
 recursion from `foo.py`.  We also use `sys.exit()` at the bottom, which means
 that `launch()` will try to exit the python process when outside of a virtual
 environment. If a caller really wanted to, they could catch `SystemExit`.
-Admitedly I'm not sure if I like this `sys.exit()` usage, but I like the idea of
+Admittedly I'm not sure if I like this `sys.exit()` usage, but I like the idea of
 callers not needing to have conditional logic around their use of `launch()`.
 
 The thought did briefly creep into the back of my mind to do the logic when
@@ -327,7 +327,7 @@ The Last Refactor
 -----------------
 
 As I mentioned before, most of the team members aren't python developers and I
-want this transition to be as seemless as possible for them.  In order to
+want this transition to be as seamless as possible for them.  In order to
 streamline this change I would like to avoid extra steps for the developers when
 they move to a newer version of the code base.  This means I'm going to do
 something that is debatable, the script will be installing [poetry][poetry] if

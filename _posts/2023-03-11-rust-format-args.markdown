@@ -33,7 +33,7 @@ help: consider using a `let` binding to create a longer lived value
    |
 ```
 
-Unfortunatly this suggestion is more or less what I had written:
+Unfortunately this suggestion is more or less what I had written:
 
 ```rust
 let intermediate = format_args!("{something} World!");
@@ -44,7 +44,7 @@ Adding an extra intermediate variable will not help.
 After banging my head for a while I finally ran across this issue
 <https://github.com/rust-lang/rust/issues/92698>. The issue explained that
 `format_args!()` is meant to be used right away. It is temporary and is more or
-less immediatly dropped.
+less immediately dropped.
 
 This issue also explained that here are ways to work around this limitation by
 using match statements or similar:

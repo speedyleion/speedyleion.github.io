@@ -15,33 +15,33 @@ fortunate to not currently suffer from RSI or other ailments that impede the use
 of a mouse. 
 
 I'm not left-handed, but a some years ago, when I was playing PC games a lot, I
-started developing a slight throb in my rigth wrist. I was concerned that it
+started developing a slight throb in my right wrist. I was concerned that it
 might be an early indicator of RSI so I chose to move over to a left-handed
 mouse. Since then I've been fairly comfortable with the left-handed mouse setup.
 I wanted the trackball to be left-handed. It appears that Elecom is the only one
 making a left-handed trackball.
 
-Considerng that 90% of software bugs are written by rigth-handed people, I'm
+Considerng that 90% of software bugs are written by right-handed people, I'm
 hoping my use of a left-handed input device puts me in the other 10% of bugs
 camp.
 
-The EX-G worked great for about two weeks. I plugged the wireless reciever
+The EX-G worked great for about two weeks. I plugged the wireless receiver
 into my computer and it just worked. No software to install and no futzing with
 the OS mouse settings. It only took a week to start to feel comfortable using
 the trackball in day to day tasks.
 
-Unfortunatly, about two weeks in, it started to skip around and stutter. I
+Unfortunately, about two weeks in, it started to skip around and stutter. I
 noticed not only did the mouse cursor movement stutter, but the scroll wheel
 was also stuttering. To try and fix the issue I tried blowing out the optical
 sensor for the trackball. I also changed the battery and moved the wireless
-reciever dongle to other usb ports on my computer. My hunch is that it's an
+receiver dongle to other usb ports on my computer. My hunch is that it's an
 issue with the wireless connectivity, but it could be something internal to the
 controller as well. I have a long standing anti-wireless stance due to
 historical issues like this, but being the only left-handed trackball that I
 found my choices were limited.
 
 My plan was to return the EX-G and either go back to my left-handed mouse or try
-out a right-handed trackball. Then a thought occured to me, with many of the do
+out a right-handed trackball. Then a thought occurred to me, with many of the do
 it yourself keyboards happening and since the EX-G is already shaped nicely for
 a left hand perhaps I could convert it to wired. Bouncing the idea of a couple
 of people it seemed like a reasonable thing to attempt.
@@ -110,14 +110,14 @@ I'm not too concerned about the click under the ring finger.
     </ol>
 2. Figure out how to interpret the trackball sensor
     <ol type="a">
-      <li>Dissassemble the EX-G in a non destructive manner.</li>
+      <li>Disassemble the EX-G in a non destructive manner.</li>
       <li>Attempt to identify the sensor part and get its specification</li>
       <li>Failing a dedicated sensor specification reverse engineer the inputs
       and outputs of the sensor</li>
     </ol>
 3. Figure out the scroll wheel sensor
     <ol type="a">
-      <li>Re-use dissassembled state from above step</li>
+      <li>Re-use disassembled state from above step</li>
       <li>Attempt to identify the sensor part and get its specification</li>
       <li>Failing a dedicated sensor specification reverse engineer the inputs
       and outputs of the sensor</li>

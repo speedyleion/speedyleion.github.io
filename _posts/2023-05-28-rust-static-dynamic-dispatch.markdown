@@ -5,7 +5,7 @@ date:   2023-05-28 19:30:03 -0700
 categories: rust traits
 ---
 
-When invoking an object's method in rust there are two dispatch mechanisims,
+When invoking an object's method in rust there are two dispatch mechanisms,
 static and dynamic.
 
 ```rust
@@ -114,7 +114,7 @@ help: consider relaxing the implicit `Sized` restriction
 For more information about this error, try `rustc --explain E0277`.
 ```
 
-Like many rust error messages, this one provides you with a potentional fix,
+Like many rust error messages, this one provides you with a potential fix,
 adding `+ ?Sized` to the trait bounds.
 
 ## Implicitly Sized

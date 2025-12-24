@@ -110,7 +110,7 @@ Looking in `/var/lib/dkms/sgx/1.41/build/make.log` I found:
   775 |  #error "kernel version is not be supported. We need either mmput_async or kallsyms_lookup_name exported from kernel"
       |   ^~~~~
 ```
-This is probably becuase I updated the kernel :(.
+This is probably because I updated the kernel :(.
 
 Second Installation Attempt
 ---------------------------
@@ -237,7 +237,7 @@ available through WSL.
 Summary
 =======
 
-This post is already pretty long so I'll stop here.  Unfortunatly I don't have
+This post is already pretty long so I'll stop here.  Unfortunately I don't have
 HW SGX working via WSL.  I'll try to do some more digging and see if I can get
 it working with WSL, otherwise I may just need to punt and utilize the windows
 SDKs for HW usage.

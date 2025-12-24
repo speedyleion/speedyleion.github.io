@@ -20,7 +20,7 @@ Reporters and Listeners
 perspective a reporter is basically the output style of the test results.  By
 default only the failed test information is provided.
 
-A [listener][listener] recieves all of the test events, even passing test info.
+A [listener][listener] receives all of the test events, even passing test info.
 A listener is a bit more generic in that it is meant do anything an integrator
 might find a use for.  This is most likely the reason multiple listeners are
 supported and there is no generic output file flag for them.
@@ -35,7 +35,7 @@ and the accompanying documentation
 
 This listener ends up separating the coverage report for each test case and/or
 section.  I haven't read the full documentation, but it seems one could more
-easly know which tests target which parts of the code.
+easily know which tests target which parts of the code.
 
 The Custom Listener
 ===================
@@ -76,7 +76,7 @@ all of the base class methods have default implementations. One only needs to
 override the listener events they care about.  To keep the example small we've
 only overridden the test case starting method. 
 
-Since Catch2 won't pass any other arguments to the constructur, we utilize a
+Since Catch2 won't pass any other arguments to the constructor, we utilize a
 static method and member to hold the destination filename.  When the listener is
 instantiated we provide the filename to Catch2's `makeStream()` function.  This
 function isn't publicly documented, but the code is visible in the header.  If

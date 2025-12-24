@@ -23,7 +23,7 @@ mod tests {
 
 # Limitations
 
-Unfortunatly the default test framework is lacking features that are available
+Unfortunately the default test framework is lacking features that are available
 in other languages:
 
 * It doesn't support test fixtures, setup and teardown operations

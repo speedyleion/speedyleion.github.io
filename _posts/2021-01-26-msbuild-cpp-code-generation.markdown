@@ -45,7 +45,7 @@ limitations of a custom build step. Finally they may force the code generator
 to always run in order to ensure it picks up dependencies that weren't able
 to be communicated through the custom build step. Then the code generator
 will conditionally output code only if it changed, so that anything it
-depends on doesn't unecessarily compile.
+depends on doesn't unnecessarily compile.
 
 Just like the compiler will always turn a code file into an object file, a
 code generator should always generate the code. The build system should
@@ -55,7 +55,7 @@ Tasks
 =====
 
 Tasks are the MSBuild term for operations performed as part of the build. A
-coleague of mine once said
+colleague of mine once said
 > A build system can be thought of as a task scheduler
 
 This quote and MSBuild's use of the term *task* seem to corroborate each

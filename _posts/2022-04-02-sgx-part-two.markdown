@@ -53,7 +53,7 @@ but it skipped the necessary update steps
 wsl --install -d Ubuntu-20.04
 ```
 
-Unfortunatly this left me with an error, 
+Unfortunately this left me with an error, 
 
 > Error: 0x800701bc WSL 2 requires an update to its kernel component. For information please visit https://aka.ms/wsl2kernel
 
@@ -105,7 +105,7 @@ cd /lib/modules
 sudo ln -s 5.4.91-microsoft-standard-WSL2+/ 5.4.91-microsoft-standard-WSL2
 ```
 
-Navigate back to a less priveledged directory. I used the home dir. 
+Navigate back to a less privileged directory. I used the home dir. 
 
 This will install the driver and build and run the `test-sgx` app.
 

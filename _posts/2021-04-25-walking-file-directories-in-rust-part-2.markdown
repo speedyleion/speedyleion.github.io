@@ -7,7 +7,7 @@ categories: rust git
 
 This post is meant to follow on from [Efficientlly Walking File Directories
 in Rust]({% post_url 2021-02-13-walking-file-directories-in-rust %}) and 
-correct some innaccuracies in [Speeding Up File
+correct some inaccuracies in [Speeding Up File
 Modification Time Lookup on Windows]({% post_url
 2021-03-03-speeding-up-windows-file-status-lookup %}).
 
@@ -28,7 +28,7 @@ the directory structure twice:
 File I/O is generally slower than most other CPU processing. So in general
 only walking a directory once should show a decent improvement.  
 
-Accessing the files in each directory twice was happening becuase a direct
+Accessing the files in each directory twice was happening because a direct
 call to get a file's modified time via [std::fs::modified()][modified] showed
 a significant time cost.  I double checked that [jwalk] itself didn't happen
 to propagate the modified time.  One can see that the
@@ -97,7 +97,7 @@ the hopes that maybe it was using [NtQueryDirectoryFile] on the backend and
 was just more efficient than my attempt.  However looking in the rust 
 [source code][ReadDir] it looks to be using [FindNextFileW].
 
-I did some more research to see if perhaps I was completly misunderstanding
+I did some more research to see if perhaps I was completely misunderstanding
 [NtQueryDirectoryFile] and what it could do:
 
 * [https://github.com/chromium/vs-chromium/issues/58](https://github.com/chromium/vs-chromium/issues/58)
@@ -131,7 +131,7 @@ walk_dir_threaded
 I was a bit surprised that just a basic [rayon::scope] around [read_dir]
 outperforms [jwalk].  In [jwalk]'s defense, it is a generic threaded
 directory walking implementation.  And [jwalk] clearly outperforms the single
-threaded `walk_dir` appraoch.  Using [rayon::scope] around [read_dir], one is
+threaded `walk_dir` approach.  Using [rayon::scope] around [read_dir], one is
 more likely to write a specific implementation that isn't as portable or
 reusable.
 
@@ -152,7 +152,7 @@ compare modification times resulted in 349.4563ms (163.6281 + 185.8282) just
 walking through the files.  Updating to use `walk_dir_threaded` only costs
 147.7341ms or an improvement of ~55%.
 
-This improvment was clearly seen when running [win-git-status] against
+This improvement was clearly seen when running [win-git-status] against
 the [llvm-project] at commit [0f9f0a40]. The time went from ~770ms to
 ~570ms
 

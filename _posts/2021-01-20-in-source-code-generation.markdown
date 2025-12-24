@@ -12,16 +12,16 @@ go against this guidance:
 - In some development environments, like highly regulated ones, it may be
   easier to review the generated file(s) than to take the steps necessary to
   approve a code generation tool.
-- One may want to distrubute these generated files for consumers, without
-  forcing the consumers to utilze the code generation tool.
+- One may want to distribute these generated files for consumers, without
+  forcing the consumers to utilize the code generation tool.
 
 (If you know of other reasons please post them.)
 
 Most build systems will connect any generated code files up to the clean
 target. This means that anytime someone runs ``my_build_system clean`` *all*
-generated files will be removed. For generated code that is commited, this
+generated files will be removed. For generated code that is committed, this
 will cause extra burden on the developers as they'll have to rebuild before
-commiting or check back out the now deleted source files.
+committing or check back out the now deleted source files.
 
 The trick to work around the build system is to not tell it about the
 generated code.  We'll go over an example using CMake.
@@ -66,7 +66,7 @@ CMake will complain if a source file is missing, unless it has the
 either need to manually create an empty version of the source file to get
 things started. Or one can utilize the [FILE(TOUCH <file>)][file_touch]
 command at configure time. we'll show the [FILE(TOUCH <file>)][file_touch]
-option as it is a littl more automated.
+option as it is a little more automated.
 
 One issue with generating a compiled source file is that the backend build
 system, like [Ninja][ninja], will do an initial pass to see what's out of
