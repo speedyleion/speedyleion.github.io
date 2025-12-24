@@ -64,7 +64,7 @@ Clearly these aren't the same hash. Scratching my head for a bit I decided to
 hash the object that git had stored.  
 
 Git will store objects in `.git/objects`. The first 2 characters of the hash
-value will be the directory and the remaning will be the stored object. The
+value will be the directory and the remaining will be the stored object. The
 objects are stored in a compressed format so if one `cat`s them or similar it
 will be binary gibberish.
 

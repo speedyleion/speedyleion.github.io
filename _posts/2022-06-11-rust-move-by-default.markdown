@@ -265,7 +265,7 @@ The [Compiler Explorer][compiler explorer] output is:
 There are a few differences with the rust pass by value and the rust pass by
 reference but for the most par they are fairly close .  
 
-One may notice the ommision of a `memcpy` in the pass by reference
+One may notice the omission of a `memcpy` in the pass by reference
 version.  This is because these examples are without optimizations.  One can
 compile with optimizations or change the pass by value example to be the
 following to get rid of the `memcpy` that isn't present in the pass by

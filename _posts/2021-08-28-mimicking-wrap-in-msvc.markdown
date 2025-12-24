@@ -101,7 +101,7 @@ files:
 
 - [DUMPBIN][DUMPBIN] similar to [llvm-objdump][llvm-objdump], it provides
   information on library and object files.
-- [LIB][LIB] handles assembling and exracting library files.
+- [LIB][LIB] handles assembling and extracting library files.
 - [EDITBIN][EDITBIN] handles editing object files.
 
 These tools must be accessed through a Visual Studio command prompt.

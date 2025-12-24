@@ -9,7 +9,7 @@ The following chunk of code tries to parse a [git index][git-index] file. The
 ``Index::read_entry()`` function is meant to be reading out each file name
 and it's respective SHA form the git index. The code was actually reading out
 the first file entry over and over, for the number of files in the index. The
-first file happend to be the ``.gitignore`` file.
+first file happened to be the ``.gitignore`` file.
 
 {% highlight rust %}
 pub fn new(path: &Path) -> Result<Index, GitStatusError> {

@@ -8,7 +8,7 @@ categories: rust git
 Working on my rust project, [win-git-status], I finally got to the point
 where I was walking the working tree and getting the file modification times.
 
-Initiall performance testing against the [llvm-project] on commit [0f9f0a40]
+Initial performance testing against the [llvm-project] on commit [0f9f0a40]
 was at ~6 seconds.  This is no where near the 0.340 seconds I was getting from `git status`,  
 [Efficientlly Walking File Directories in Rust]({% post_url 2021-02-13-walking-file-directories-in-rust %})
 

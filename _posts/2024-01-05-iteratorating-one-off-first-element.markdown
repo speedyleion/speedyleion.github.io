@@ -135,7 +135,7 @@ pub fn once_join(slice: &[&str]) -> String {
 }
 ```
 
-This example creates an iterator of one itme being an empty string. The iterator
+This example creates an iterator of one item being an empty string. The iterator
 will be exhausted after the first time it's called and then the `unwrap_or_else`
 will provide the value we'll use in all other instances.
 
