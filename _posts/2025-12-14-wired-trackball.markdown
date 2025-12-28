@@ -156,5 +156,5 @@ process.
 
 
 [ex-g]: https://elecomusa.com/products/ex-g-trackball-wireless-usb-copy
-[atmega32U4]: https://www.amazon.com/Atmega32U4-Development-AYWHP-microcontroller-Compatible/dp/B0DFGZDXSD?tag=ustxtaddt-20&th=1
+[atmega32U4]: https://www.amazon.com/Atmega32U4-Programming-Development-Micro-Controller-Compatible/dp/B0D83FBYPD
 [arduino-kit]: https://store-usa.arduino.cc/products/arduino-starter-kit-multi-language
