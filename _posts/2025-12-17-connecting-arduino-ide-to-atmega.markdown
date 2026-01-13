@@ -58,7 +58,7 @@ option for the "Arduino Leonardo".
 
 <img src="/assets/arduino-ide-select-leonardo.png" alt="Image of Select Board control with Arduino Leonardo" style="max-width: 500px; width: 100%; height: auto;">
 
-Doing a quick web search for the Leonardo, I found the [Arduino docs][leondardo] saying:
+Doing a quick web search for the Leonardo, I found the [Arduino docs][leonardo] saying:
 
 > The Leonardo differs from all preceding boards in that the ATmega32u4 has built-in USB communication
 
