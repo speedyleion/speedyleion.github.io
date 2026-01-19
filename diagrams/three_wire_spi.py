@@ -23,6 +23,29 @@ class Controller(Ic):
         )
         super().__init__(pins=pins, botlabel='Controller')
 
+class Controller4Wire(Ic):
+    def __init__(self, cs_count=1, **kwargs):
+
+        pins = [
+        IcPin(name='MOSI', side='right'),
+        IcPin(name='MISO', side='right'),
+        IcPin(name=f'CS', side='right'),
+        IcPin(name='CLK', side='right'),
+        IcPin(name='GND', side='right'),
+        ]
+
+        super().__init__(pins=pins, botlabel='Controller')
+
+class Controller4WirePeripheral(Ic):
+    def __init__(self, name='Peripheral', **kwargs):
+        pins=[
+        IcPin(name='DATA', side='left'),
+        IcPin(name='CS', side='left'),
+        IcPin(name='CLK', side='left'),
+        IcPin(name='GND', side='left'),
+        ]
+        super().__init__(pins=pins, botlabel=name)
+
 
 class Peripheral(Ic):
     def __init__(self, name='Peripheral', **kwargs):
@@ -45,6 +68,21 @@ with schemdraw.Drawing(show=False, file='../assets/three_wire_spi.svg') as d:
     d += elm.lines.Wire('-|').at(controller.DATA).to(peripheral.DATA)
     d += elm.lines.Wire('-|').at(controller.CS).to(peripheral.CS)
     d += elm.lines.Wire('-|').at(controller.GND).to(peripheral.GND)
+
+with schemdraw.Drawing(show=False, file='../assets/four_wire_spi_controller.svg') as d:
+    controller = Controller4Wire()
+    d += controller
+    d += elm.lines.Line().at(controller.CLK).right()
+
+    peripheral = Controller4WirePeripheral()
+    d += peripheral.anchor('CLK')
+    
+    d += elm.lines.Wire('-|').at(controller.MISO).to(peripheral.DATA)
+    d += elm.lines.Wire('-|').at(controller.CS).to(peripheral.CS)
+    d += elm.lines.Wire('-|').at(controller.GND).to(peripheral.GND)
+    r = elm.Resistor().right().label('10kΩ', loc='bottom').at(controller.MOSI)
+    d += r
+    d +=  elm.lines.Line().at(r.end).toy(controller.MISO).dot()
 
 
 with schemdraw.Drawing(show=False, file='../assets/clock_signal.svg') as d:
