@@ -1,23 +1,23 @@
 ---
 layout: post
-title:  "Recording the traffic in the EX-G to PWM3320DB-TYDU"
+title:  "Recording the traffic in the EX-G to PMW3320DB-TYDU"
 date:   2026-01-11 18:00:03 -0800
 categories: mice electronics 
 ---
 
-In the previous [post]({% post_url 2026-01-03-logic-analyzer-pwm3320db-tydu %}),
+In the previous [post]({% post_url 2026-01-03-logic-analyzer-pmw3320db-tydu %}),
 I was able to successfully snoop on the SPI traffic between the EX-G controller
-and the PWM3320DB-TYDU optical sensor.
+and the PMW3320DB-TYDU optical sensor.
 
 The intent of this post is to capture all of the necessary communication between
-the EX-G controller and the PWM3320DB-TYDU in order to recreate the
-initialization of the PWM3320DB-TYDU as well as correctly read the sensors X and
+the EX-G controller and the PMW3320DB-TYDU in order to recreate the
+initialization of the PMW3320DB-TYDU as well as correctly read the sensors X and
 Y delta information to correctly move the mouse cursor on a computer.
 
 Looking back at my initial investigation into 
-[Serial Peripheral Interface on PWM3320DB-TYDU]({% post_url
-2026-01-01-spi-and-pwm3320db-tydu %}), I had listed wanting to look at the SPI
-communication between the EX-G controller and the PWM3320DB-TYDU under the
+[Serial Peripheral Interface on PMW3320DB-TYDU]({% post_url
+2026-01-01-spi-and-pmw3320db-tydu %}), I had listed wanting to look at the SPI
+communication between the EX-G controller and the PMW3320DB-TYDU under the
 following conditions:
 
 - power on
@@ -35,7 +35,7 @@ connection can save some setup work.
 
 The EX-G powers up by going from off to the low power mode. I'm going to use a
 falling edge trigger on the `CS` channel, with the default duration of one
-second. I hope that the PWM3320DB-TYDU is fully initialized within one second.
+second. I hope that the PMW3320DB-TYDU is fully initialized within one second.
 If I still see what looks like communication towards the end of the one second,
 then I will increase the capture time.
 
@@ -43,12 +43,12 @@ With the power switch in the off position, I connected the battery. With the
 [Saleae Logic Pro 2](https://saleae.com/downloads) recording, I turned the EX-G
 power switch to the low power position.
 
-<img src="/assets/pwm3320db-tydu-power-on.png" alt="Logic analyzer capture of powering on pwm3320db-tydu" style="max-width: 500px; width: 100%; height: auto;">
+<img src="/assets/pmw3320db-tydu-power-on.png" alt="Logic analyzer capture of powering on pmw3320db-tydu" style="max-width: 500px; width: 100%; height: auto;">
 
 Looking at the above image, all the channels were low until about 1/3 of a
 second before the vertical dashed yellow line. The dashed yellow line is the
 trigger event that started the capture. It looks like it took that 1/3 of a
-second for the EX-G to power on enough to begin talking to the PWM3320DB-TYDU.
+second for the EX-G to power on enough to begin talking to the PMW3320DB-TYDU.
 
 We can also see there was some initial communication that happened fairly close
 to the trigger event, and then there was nothing more for the rest of the one
@@ -57,7 +57,7 @@ short time frame.
 
 Zooming in closer to the trigger event and follow on communication.
 
-<img src="/assets/pwm3320db-tydu-power-on-zoomed-in.png" alt="Logic analyzer capture of powering on pwm3320db-tydu zoomed in to focus only on duration with signal changes" style="max-width: 500px; width: 100%; height: auto;">
+<img src="/assets/pmw3320db-tydu-power-on-zoomed-in.png" alt="Logic analyzer capture of powering on pmw3320db-tydu zoomed in to focus only on duration with signal changes" style="max-width: 500px; width: 100%; height: auto;">
 
 It looks like the power on traffic stops ~65ms after the trigger event occurred.
 The start of the capture happens when `CS` first goes low. `CS` is the green
@@ -80,7 +80,7 @@ There is a slight drop low around the time that `CS` and `CLK` both go high for
 
 Zooming into this dip we get the following:
 
-<img src="/assets/pwm3320db-tydu-power-on-first-message.png" alt="Zoom in to first data dip of power on" style="max-width: 500px; width: 100%; height: auto;">
+<img src="/assets/pmw3320db-tydu-power-on-first-message.png" alt="Zoom in to first data dip of power on" style="max-width: 500px; width: 100%; height: auto;">
 
 It looks like it might be an SPI message. We can see that logic pro 2 failed to
 decode, due to the `CLK` line starting at a low value instead of the idle value
@@ -120,7 +120,7 @@ then low for 2ms, resetting the SPI port
 Moving over to the _bouncing_ after the `tWAKEUP` delay. We can see that these
 are SPI messages:
 
-<img src="/assets/pwm3320db-tydu-power-on-configuration.png" alt="Zoomed in on communications after the tWAKEUP" style="max-width: 500px; width: 100%; height: auto;">
+<img src="/assets/pmw3320db-tydu-power-on-configuration.png" alt="Zoomed in on communications after the tWAKEUP" style="max-width: 500px; width: 100%; height: auto;">
 
 Notice in the image above that `CS` is going low and high multiple times while
 all of the messages are being sent. The ADNS-3050 data sheet mentions:
@@ -195,7 +195,7 @@ trackball triggered a capture.
 
 The following is an example image of the SPI communication for trackball movement:
 
-<img src="/assets/pwm3320db-tydu-trackball-movement.png" alt="Logic analyzer capture of trackball movement" style="max-width: 500px; width: 100%; height: auto;">
+<img src="/assets/pmw3320db-tydu-trackball-movement.png" alt="Logic analyzer capture of trackball movement" style="max-width: 500px; width: 100%; height: auto;">
 
 The first byte is a read from register 0x63, the `BURST_MOTION` register. This
 means the next three bytes are the values of the `DELTA_X`, `DELTA_Y`, and

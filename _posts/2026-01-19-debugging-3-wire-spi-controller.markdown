@@ -9,7 +9,7 @@ categories: mice electronics arduino
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
-In the previous [post]({% post_url 2026-01-18-esp32c6-spi-pwm3320db-tydu %}), I
+In the previous [post]({% post_url 2026-01-18-esp32c6-spi-pmw3320db-tydu %}), I
 tried and failed to get the esp32c6 to work as a three wire SPI controller. So
 in this post I'm hoping to figure out how to get it working correctly.
 
@@ -49,7 +49,7 @@ and that's what's going to happen here.
 I've currently fleshed out three steps to take on this debugging journey:
 
 1. Improve SPI capture 
-    a. Re-initialize PWM3320DB-TYDU every second in the `loop()`
+    a. Re-initialize PMW3320DB-TYDU every second in the `loop()`
     b. Capture both `COPI` and `CIPO`
 2. Slow down the SPI clock
 3. Try smaller resistors
@@ -66,8 +66,8 @@ one will provide insight into the hypothesis that the resistor between the
 
 # Improve SPI Capture
 
-Coding up the SPI initialization of the PWM3320DB-TYDU in 
-[Failing to Control the PWM3320DB-TYDU with SPI]({% post_url 2026-01-18-esp32c6-spi-pwm3320db-tydu %})
+Coding up the SPI initialization of the PMW3320DB-TYDU in 
+[Failing to Control the PMW3320DB-TYDU with SPI]({% post_url 2026-01-18-esp32c6-spi-pmw3320db-tydu %})
 was done optimistically. My thinking was the sensor would only need to be
 initialized once. Now that the intent is to debug the SPI messages coming from
 the esp32c6, I want to make it easier to take new recordings of the SPI
@@ -76,7 +76,7 @@ messages. This means I will revert back to what was done in
 `loop()` repeatedly, outputs the SPI message(s) and then delays for one second.
 
 <details>
-  <summary>Code to initialize PWM3320DB-TYDU with SPI, in loop</summary>
+  <summary>Code to initialize PMW3320DB-TYDU with SPI, in loop</summary>
 
 <div markdown="1">
 {% raw %}
@@ -85,7 +85,7 @@ messages. This means I will revert back to what was done in
 
 const int tWakeup = 55;
 // This time was re-used from capture taken for OEM EX-G initializing
-// PWM3320DB-TYDU
+// PMW3320DB-TYDU
 const int tPowerUpCs = 2;
 
 // Time between commands, in µs
@@ -131,11 +131,11 @@ void setup() {
 }
 
 void loop() {
-  initPwm();
+  initPmw();
   delay(1000);
 }
 
-void initPwm() {
+void initPmw() {
   // Drive High and then low from https://media.digikey.com/pdf/data%20sheets/avago%20pdfs/adns-3050.pdf
   digitalWrite(SS, LOW);
   digitalWrite(SS, HIGH);
@@ -206,7 +206,7 @@ uint8_t read(uint8_t reg) {
 </details>
 <br>
 The setup used in 
-[Failing to Control the PWM3320DB-TYDU with SPI]({% post_url 2026-01-18-esp32c6-spi-pwm3320db-tydu %})
+[Failing to Control the PMW3320DB-TYDU with SPI]({% post_url 2026-01-18-esp32c6-spi-pmw3320db-tydu %})
 initially captured the `CIPO` pin of the esp32c6. When the SPI messages seemed
 incorrect, the capture was moved over to the `COPI` pin. 
 
@@ -237,21 +237,21 @@ and displayed with the other three channels.
 
 The first capture will include the 10 kΩ resistor between the `COPI` and `CIPO`
 pins. The thought is, it should look similar to the first capture from 
-[Failing to Control the PWM3320DB-TYDU with SPI]({% post_url 2026-01-18-esp32c6-spi-pwm3320db-tydu %}#testing-out-the-code).
+[Failing to Control the PMW3320DB-TYDU with SPI]({% post_url 2026-01-18-esp32c6-spi-pmw3320db-tydu %}#testing-out-the-code).
 If the capture is different, in particular if it has the correct SPI messages,
-it may be an indicator that initializing the PWM3320DB-TYDU in the `setup()`
+it may be an indicator that initializing the PMW3320DB-TYDU in the `setup()`
 function is too soon in the esp32c6 startup process to reliably use SPI.
 
 The capture: 
 
-![capturing COPI and CIPO of esp32c6](/assets/esp32-spi-pwm-copi-and-cipo.png)
+![capturing COPI and CIPO of esp32c6](/assets/esp32-spi-pmw-copi-and-cipo.png)
 
 Right away we can see the first two bytes on the `COPI` channel are `0xBA` and
 `0x5A`.  These represent the `POWER_UP_RESET`, which is expected. However the `CIPO`
 capture is showing `0xFF` and `0x5A`. The first byte is incorrect, why? 
 
 It may be good to spend some time focusing on that first byte. Let's zoom in on it:
-![zoomed in on first byte of COPI and CIPO capture](/assets/esp32-spi-pwm-copi-and-cipo-zoomed.png)
+![zoomed in on first byte of COPI and CIPO capture](/assets/esp32-spi-pmw-copi-and-cipo-zoomed.png)
 
 This is interesting. There are a number of, what look like, stray rises on the
 `CIPO` channel. They correspond closely to the clock rises. Due to CPHA being
@@ -309,7 +309,7 @@ frequency that stops working and the lowest one that works
 
 Looking at the capture using 65,536 Hz:
 
-![capture of COPI and CIPO from esp32c6 with 65,536 clock frequency](/assets/esp32-spi-pwm-copi-and-cipo-64khz.png)
+![capture of COPI and CIPO from esp32c6 with 65,536 clock frequency](/assets/esp32-spi-pmw-copi-and-cipo-64khz.png)
 
 I wanted to call out that the [Saleae Logic Pro 2](https://saleae.com/downloads)
 has a nice feature where if you hover over the clock signal, or any signal, it
@@ -354,7 +354,7 @@ R_p(max) = \frac{t_r}{0.8473 \times C_b}
 $$
 
 $$t_r$$ is the rise time of the signal. This is available in both the esp32c6
-data sheet as well as the PWM3320DB-TYDU data sheet. $$C_b$$ is the capacitive
+data sheet as well as the PMW3320DB-TYDU data sheet. $$C_b$$ is the capacitive
 load of the line. I'm not sure what the captive load of the line is for my bread
 board setup and I'm not sure I'll know what it will be of the final circuit I
 build. 
@@ -366,7 +366,7 @@ the minimum, causing a short between the pins.
 
 Swapping out the 10 kΩ for the 1 kΩ and doing a capture:
 
-![capture of COPI and CIPO from esp32c6 using 1 kΩ resistor ](/assets/esp32-spi-pwm-copi-and-cipo-1kohm.png)
+![capture of COPI and CIPO from esp32c6 using 1 kΩ resistor ](/assets/esp32-spi-pmw-copi-and-cipo-1kohm.png)
 
 The image only shows the first three SPI message byte pairs. The `COPI` and
 `CIPO` values are the same. I scrolled through all the message pairs and they
@@ -374,7 +374,7 @@ matched. The image also shows that I bumped the SPI frequency back to 1 MHz.
 
 I'm a bit curious to see what the rise delay between the `COPI` and `CIPO`
 channels is. Zooming in on the first rise:
-![capture of COPI and CIPO from esp32c6 using 1 kΩ resistor ](/assets/esp32-spi-pwm-copi-and-cipo-rise.png)
+![capture of COPI and CIPO from esp32c6 using 1 kΩ resistor ](/assets/esp32-spi-pmw-copi-and-cipo-rise.png)
 
 It looks like the `COPI` and `CIPO` channels are going up at the same time. More
 likely, the delta can't be measured within the precision of the logic analyzer I

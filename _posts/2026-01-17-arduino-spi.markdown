@@ -10,9 +10,9 @@ development board, I felt the next step was to get the esp32c6 talking SPI.
 
 The plan was to get the esp32c6 to send two bytes via SPI. I would verify the
 correctness of the message by capturing it with the
-[logic analyzer]({% post_url 2026-01-03-logic-analyzer-pwm3320db-tydu %}). The
+[logic analyzer]({% post_url 2026-01-03-logic-analyzer-pmw3320db-tydu %}). The
 reason for two bytes is that's the common message the 
-[PWM3200DB-TYDU uses for SPI]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %}).
+[PMW3200DB-TYDU uses for SPI]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %}).
 
 # Programming SPI
 
@@ -54,7 +54,7 @@ to an LED to better visualize what's happening.
 
 `SPI_MSBFIRST` and `SPI_MODE3` were chosen based on the successful use of them
 when snooping on the 
-[pwm3320DB-TYDU SPI]({% post_url 2026-01-03-logic-analyzer-pwm3320db-tydu %}).
+[pmw3320DB-TYDU SPI]({% post_url 2026-01-03-logic-analyzer-pmw3320db-tydu %}).
 
 Hopefully the code isn't too hard to follow.
 1. Start an SPI message with `beginTransaction()`
@@ -182,7 +182,7 @@ I tried rewiring everything so that all connections were on one side of the
 logic board's connector. Still same result running a new recording.
 
 I decided to changed the clock frequency to the 1,000,000 MHz that the
-PWM3320DB-TYDU supports.
+PMW3320DB-TYDU supports.
 ```c
   SPISettings settings = SPISettings(1000000, SPI_MSBFIRST, SPI_MODE3);
 ```
@@ -210,7 +210,7 @@ when this is used, whether it is held low for multiple transfers or for each
 individual transfer, and so on. Control SS with digitalWrite().
 
 In hindsight, this makes sense. In
-[Serial Peripheral Interface on PWM3320DB-TYDU]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %})
+[Serial Peripheral Interface on PMW3320DB-TYDU]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %})
 I mentioned how multiple peripherals could be on the same SPI clock and data
 lines. Each peripheral would know when to listen based on its chip select
 being activated. This means there may be more than one chip select line on the
@@ -322,7 +322,7 @@ likely each `transfer()` call.
 # Thoughts and What's Next
 
 While I got the hardware chip select to function, I don't think it will work
-with the PWM3320DB-TYDU, because it's framing each byte and not each
+with the PMW3320DB-TYDU, because it's framing each byte and not each
 transaction. From the 
 [ADNS-3050 data sheet](https://media.digikey.com/pdf/data%20sheets/avago%20pdfs/adns-3050.pdf)
 
@@ -331,15 +331,15 @@ is aborted and the serial port will be reset.
 
 One may notice that the data, `MOSI`, line idles low. The captures from 
 snooping on the 
-[pwm3320DB-TYDU SPI]({% post_url 2026-01-03-logic-analyzer-pwm3320db-tydu %})
+[pmw3320DB-TYDU SPI]({% post_url 2026-01-03-logic-analyzer-pmw3320db-tydu %})
 had the data line idling high. I don't think the idle value matters. I think as
 long as the line is in the correct state when the clock transitions either end
 will read the value correctly.
 
 I think the next steps will be to re-create the startup/reset cycle that the
-EX-G uses for the PWM3320DB-TYDU sensor. The first pass will *not* be connected
-to the PWM3320DB-TYDU sensor, instead the data will be captured re-using the
+EX-G uses for the PMW3320DB-TYDU sensor. The first pass will *not* be connected
+to the PMW3320DB-TYDU sensor, instead the data will be captured re-using the
 bread board set up from above. Once that is ironed out and looks good then I'll
-try connecting it to the PWM3320DB-TYDU sensor.
+try connecting it to the PMW3320DB-TYDU sensor.
 
 [spi-library]: https://rheingoldheavy.com/the-arduino-spi-library/

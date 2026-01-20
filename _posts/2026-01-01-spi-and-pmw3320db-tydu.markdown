@@ -1,13 +1,13 @@
 ---
 layout: post
-title:  "Serial Peripheral Interface on PWM3320DB-TYDU"
+title:  "Serial Peripheral Interface on PMW3320DB-TYDU"
 date:   2026-01-01 17:00:03 -0800
 categories: mice electronics 
 ---
 
-[Reading through]({% post_url 2025-12-31-pwm3320db-tydu-sensor %}) the 
+[Reading through]({% post_url 2025-12-31-pmw3320db-tydu-sensor %}) the 
 [data sheet](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf?ext=.pdf)
-for the PWM3320DB-TYDU sensor, the primary interface is SPI (Serial Peripheral
+for the PMW3320DB-TYDU sensor, the primary interface is SPI (Serial Peripheral
 Interface). I have no prior experience with this interface, or really most
 hardware communication interfaces. I needed to pause on actual code writing and
 hardware wiring to spend some time learning about SPI.
@@ -18,7 +18,7 @@ Doing some internet research it seems that SPI is a common protocol used in
 embedded systems for communicating between integrated circuits.
 
 I'm going to cover the pieces that I've found important for how I plan to
-communicate with the PWM3320DB-TYDU sensor. There are a number of good
+communicate with the PMW3320DB-TYDU sensor. There are a number of good
 references for deeper dives on SPI if one is inclined:
 
 - [Wikipedia](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface)
@@ -27,13 +27,13 @@ references for deeper dives on SPI if one is inclined:
 # Three Wire SPI
 
 I'm going to skip explaining four wire SPI and only focus on three wire, since
-that's what the PWM3320DB-TYDU uses.
+that's what the PMW3320DB-TYDU uses.
 
 Three wire SPI uses three connections:
 
 - CLK clock used for synchronizing data transmission
 - DATA data input and output. This one has multiple names; SISO(slave in/slave
-out), MOMI(master out/master in). The PWM3320DB-TYDU data sheet uses SDIO. I'm
+out), MOMI(master out/master in). The PMW3320DB-TYDU data sheet uses SDIO. I'm
 going to keep it generic as _DATA_
 - CS chip select
 
@@ -109,28 +109,28 @@ The reading of the value will occur when the clock signal rises high. This
 provides half a clock cycle of tolerance for the data to be ready on the `DATA`
 line.
 
-# SPI with PWM3320DB-TYDU
+# SPI with PMW3320DB-TYDU
 
 Looking at the 
 [data sheet](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf?ext=.pdf)
-for the PWM3320DB-TYDU there is only a mention of the maximum SPI frequency.
+for the PMW3320DB-TYDU there is only a mention of the maximum SPI frequency.
 There are no details pertaining to the CPOL or CPHA. There isn't even
 information on what the bits sent and read on the SPI `DATA` line should look
 like.
 
 I did some digging to try and get more insight on interfacing with the 
-PWM3320DB-TYDU. This digging came up short, but I was fortunate enough to come
+PMW3320DB-TYDU. This digging came up short, but I was fortunate enough to come
 across data sheets for the 
 [ADNS-3050](https://media.digikey.com/pdf/data%20sheets/avago%20pdfs/adns-3050.pdf)
 and the [ADNS-5050](https://www.espruino.com/datasheets/ADNS5050.pdf) sensors.
 
 While these sensors aren't technically from same manufacturer, I was able to
-find out that, PixArt (PWM3320DB-TYDU) and Avago (ADNS) entered into a license
+find out that, PixArt (PMW3320DB-TYDU) and Avago (ADNS) entered into a license
 agreement back in 2006. The result being that Avago exited the manufacture of
 optical mouse sensors and PixArt began producing the Avago designs. 
 
 With the above licensing understanding and looking at the ADNS data sheets, it's
-likely that the PWM3320DB-TYDU uses a high polarity clock with CPHA1.
+likely that the PMW3320DB-TYDU uses a high polarity clock with CPHA1.
 
 From the ADNS-5050 data sheet:
 
@@ -166,7 +166,7 @@ In the ADNS-3050 data sheet it says:
 maximum speed.
 
 I wasn't able to find the other 4 bits for motion in the ADNS-3050 data sheet,
-but this likely explains the `DELTA_XY` register in the PWM3320DB-TYDU data
+but this likely explains the `DELTA_XY` register in the PMW3320DB-TYDU data
 sheet.
 
 > DELTA_XY Upper 4 Bits for Delta X & Y Displacement
@@ -180,7 +180,7 @@ gaming mouse that requires fast motion response.
 # Next Steps
 
 While the ADNS data sheets provide more insights into how to communicate with
-the PWM3320DB-TYDU via SPI. There are still some missing details about the
+the PMW3320DB-TYDU via SPI. There are still some missing details about the
 register settings. With my new found understanding of SPI, I was thinking that I
 could reassemble the EX-G trackball enough for it to function and program the
 Atmega to spy on the SPI communication for the factory EX-G.
@@ -201,4 +201,4 @@ happens, I think I'll be better off snooping on the EX-G SPI as it:
 
 So the next steps will be to configure my Arduino UNO as a logic analyzer and
 see if I can capture the SPI communications to gain a better understanding of
-interfacing with the PWM3320DB-TYDU.
+interfacing with the PMW3320DB-TYDU.

@@ -1,25 +1,25 @@
 ---
 layout: post
-title:  "Failing to Control the PWM3320DB-TYDU with SPI"
+title:  "Failing to Control the PMW3320DB-TYDU with SPI"
 date:   2026-01-18 17:00:03 -0800
 categories: mice electronics arduino
 ---
 
-This post is going to focus on initializing the PWM3320DB-TYDU sensor using its
+This post is going to focus on initializing the PMW3320DB-TYDU sensor using its
 SPI interface. The post will build off of a number of previous posts:
-- [Serial Peripheral Interface on PWM3320DB-TYDU]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %})
-- [Recording the traffic in the EX-G to PWM3320DB-TYDU]({% post_url 2026-01-11-ex-g-pwm3320db-tydu-spi-traffic %})
+- [Serial Peripheral Interface on PMW3320DB-TYDU]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %})
+- [Recording the traffic in the EX-G to PMW3320DB-TYDU]({% post_url 2026-01-11-ex-g-pmw3320db-tydu-spi-traffic %})
 - [Using Arduino SPI library]({% post_url 2026-01-17-arduino-spi %})
 
 # The Plan
 
 The plan is to implement the 
-[high speed power mode]({% post_url 2026-01-11-ex-g-pwm3320db-tydu-spi-traffic %}#power-modes). 
+[high speed power mode]({% post_url 2026-01-11-ex-g-pmw3320db-tydu-spi-traffic %}#power-modes). 
 The previous capture of this mode showed that the EX-G was doing a full reset
 when entering this mode. I'm hopeful that this will fully initialize the
-PWM3320DB-TYDU to start sending the `DELTA_X` and `DELTA_Y` events. To keep this
+PMW3320DB-TYDU to start sending the `DELTA_X` and `DELTA_Y` events. To keep this
 first pass simple, it will be polling and not trying to utilize the interrupt
-functionality available from the PWM3320DB-TYDU.
+functionality available from the PMW3320DB-TYDU.
 
 Initial execution of the SPI code will be done similar to the work in 
 [Using Arduino SPI library]({% post_url 2026-01-17-arduino-spi %}).
@@ -27,17 +27,17 @@ Only the esp32c6 dev board and logic analyzer will be connected. The logic
 analyzer will be used to ensure the SPI messages are correct.
 
 Once I have confidence the code is sending the correct SPI messages, then the
-PWM3320DB-TYDU will be connected to the esp32c6 SPI pins. The logic analyzer
+PMW3320DB-TYDU will be connected to the esp32c6 SPI pins. The logic analyzer
 will be left in place to be able to read the messages to and from the two
 components.
 
-The goal is to get the PWM3320DB-TYDU initialized and able to read trackball
+The goal is to get the PMW3320DB-TYDU initialized and able to read trackball
 movements from it.
 
 # Revisiting 3-Wire SPI
 
 When I 
-[initially]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %}#three-wire-spi)
+[initially]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %}#three-wire-spi)
 discussed 3-wire SPI. I used a diagram where both the controller and peripheral
 only had one data line.
 
@@ -47,12 +47,12 @@ With the data line being used for both input and output. The esp32c6
 [hardware diagram](https://wiki.seeedstudio.com/xiao_esp32c6_getting_started/#hardware-overview)
 shows a `MOSI` (Master Out/Slave In) pin and a `MISO`(Master In/Slave Out) pin.
 This is a four wire controller. The esp32c6 sends data out on the `MOSI` pin and
-reads data in on the `MISO` pin. The PWM3320DB-TYDU only has the three wires
+reads data in on the `MISO` pin. The PMW3320DB-TYDU only has the three wires
 dedicated for SPI.
 
 To get the esp32c6 to work with a three wire SPI peripheral a 10 kΩ will be
 placed between the `MOSI` and `MISO` pins. The `MISO` pin will be the pin that
-connects to the `SDIO` pin of the PWM3320DB-TYDU. Connecting the `MISO` and
+connects to the `SDIO` pin of the PMW3320DB-TYDU. Connecting the `MISO` and
 `MOSI` pins is mentioned in a note on the Wikipedia article on 
 [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface#cite_note-3wireSDI-9).
 It's also mentioned in an
@@ -95,13 +95,13 @@ will work with the three wire setup. The `MOSI` and `MISO` lines are connected
 to each other. If the `MOSI` line was sending out `0xFF`, then it would pull the
 normally low idle line high. I think the sentinel value needs to match the idle
 value so that the `MOSI` line isn't doing anything different and doesn't pollute
-the data coming back from the PWM3320DB-TYDU.
+the data coming back from the PMW3320DB-TYDU.
 
 # Coding the SPI Routine
 
 The plan for the code is to have the `setup()` function initialize the SPI pins
-and initialize the PWM3320DB-TDYU. Then in the `loop()` it will poll the
-PWM3320DB-TDYU for motion. If motion is seen then it will make a `Mouse.move()`
+and initialize the PMW3320DB-TDYU. Then in the `loop()` it will poll the
+PMW3320DB-TDYU for motion. If motion is seen then it will make a `Mouse.move()`
 call with the values.
 
 <details>
@@ -115,7 +115,7 @@ call with the values.
 
 const int tWakeup = 55;
 // This time was re-used from capture taken for OEM EX-G initializing
-// PWM3320DB-TYDU
+// PMW3320DB-TYDU
 const int tPowerUpCs = 2;
 
 // Time between commands, in µs
@@ -158,7 +158,7 @@ void setup() {
   SPI.begin();
   settings = SPISettings(1000000, SPI_MSBFIRST, SPI_MODE3);
   pinMode(SS, OUTPUT);
-  initPwm();
+  initPmw();
 }
 
 void loop() {
@@ -168,7 +168,7 @@ void loop() {
   }
 }
 
-void initPwm() {
+void initPmw() {
   // Drive High and then low from https://media.digikey.com/pdf/data%20sheets/avago%20pdfs/adns-3050.pdf
   digitalWrite(SS, LOW);
   digitalWrite(SS, HIGH);
@@ -242,8 +242,8 @@ uint8_t read(uint8_t reg) {
 
 This is a bit of code, so it's collapsed by default.
 
-The `initPwm()` performs the 
-[high speed power mode]({% post_url 2026-01-11-ex-g-pwm3320db-tydu-spi-traffic %}#power-modes). 
+The `initPmw()` performs the 
+[high speed power mode]({% post_url 2026-01-11-ex-g-pmw3320db-tydu-spi-traffic %}#power-modes). 
 
 The `readMovement()` function will read from the movement registers. It is *not*
 reading in burst mode and instead is reading one register at a time.
@@ -254,8 +254,8 @@ the SPI data line.
 
 One thing to note about the behavior of these functions, is there is a delay
 after every `SPI.transfer()` call. When 
-[recording the traffic between the EX-G to PWM3320DB-TYDU]({% post_url
-2026-01-11-ex-g-pwm3320db-tydu-spi-traffic %}) the captures showed about a ~24
+[recording the traffic between the EX-G to PMW3320DB-TYDU]({% post_url
+2026-01-11-ex-g-pmw3320db-tydu-spi-traffic %}) the captures showed about a ~24
 µs delay between each byte written to the SPI bus. There was also ~ a 17 µs
 delay between the last bit written and the chip select going inactive. These
 could have been chalked up to processing delays. However, looking through the
@@ -280,7 +280,7 @@ arduino-cli compile -u -p /dev/cu.usbmodem1301 --fqbn esp32:esp32:XIAO_ESP32C6
 ```
 This resulted in:
 ```
-In file included from /Users/nick/git/pwm/pwm.ino:1:
+In file included from /Users/nick/git/pmw/pmw.ino:1:
 /Users/nick/Documents/Arduino/libraries/Mouse/src/Mouse.h:25:10: fatal error: HID.h: No such file or directory
    25 | #include "HID.h"
       |          ^~~~~~~
@@ -309,12 +309,12 @@ The code compiles and uploads now.
 
 Since the `setup()` function does most of the work, I'm going to set the 
 [Saleae Logic Pro 2](https://saleae.com/downloads) software to trigger when `CS` goes low, like was done in 
-[Recording the traffic in the EX-G to PWM3320DB-TYDU]({% post_url 2026-01-11-ex-g-pwm3320db-tydu-spi-traffic %}).
+[Recording the traffic in the EX-G to PMW3320DB-TYDU]({% post_url 2026-01-11-ex-g-pmw3320db-tydu-spi-traffic %}).
 Then I'm going to power on the esp32c6 and hope that it doesn't happen to
 trigger until the `setup()` function is executed.
 
 The output was not what I expected:
-![esp32c6 sending PWM3320DB-TYDU power up first attempt](/assets/esp32-spi-pwm-first-go.png)
+![esp32c6 sending PMW3320DB-TYDU power up first attempt](/assets/esp32-spi-pmw-first-go.png)
 
 A couple of things to note:
 1. after the trigger event, it's more or less solid messages
@@ -330,10 +330,10 @@ With the data line looking like it's idling high, I decide to change the
 
 Time to rerun the test.
 
-![esp32c6 sending PWM3320DB-TYDU power up no polling](/assets/esp32-spi-pwm-no-poll.png)
+![esp32c6 sending PMW3320DB-TYDU power up no polling](/assets/esp32-spi-pmw-no-poll.png)
 
 This is looking better. Zoomed out, it seems to match the capture from 
-[Recording the traffic in the EX-G to PWM3320DB-TYDU]({% post_url 2026-01-11-ex-g-pwm3320db-tydu-spi-traffic %}).
+[Recording the traffic in the EX-G to PMW3320DB-TYDU]({% post_url 2026-01-11-ex-g-pmw3320db-tydu-spi-traffic %}).
 - `CS` initially goes low
 - `CS` goes high for ~1.4 ms 
 - `CS` goes back low for 57 ms
@@ -342,18 +342,18 @@ This is looking better. Zoomed out, it seems to match the capture from
 
 Zooming in on the data:
 
-![esp32c6 sending PWM3320DB-TYDU power up no polling zoomed in](/assets/esp32-spi-pwm-no-poll-zoomed-in.png)
+![esp32c6 sending PMW3320DB-TYDU power up no polling zoomed in](/assets/esp32-spi-pmw-no-poll-zoomed-in.png)
 The Pro Logic 2 is failing to properly decode the SPI messages. The data line
 (top row) also seems to go low before the chip select goes active.
 
 I decide to remove the 10 kΩ resistor between the `MOSI` and `MISO` pins. Moving
 the logic analyzer capture to the `MOSI` line. The intent is to understand if
 the three pin SPI setup I have is interfering, or if initializing the
-PWM3320DB-TYDU in the `setup()` function might be too soon and the
+PMW3320DB-TYDU in the `setup()` function might be too soon and the
 initialization needs to be a one time event in the `loop()`.
 
 Rerunning the test and zooming in on some messages I see:
-![esp32c6 sending PWM3320DB-TYDU power up only using MOSI](/assets/esp32-spi-pwm-no-poll-mosi-only.png)
+![esp32c6 sending PMW3320DB-TYDU power up only using MOSI](/assets/esp32-spi-pmw-no-poll-mosi-only.png)
 
 Those decoded values seem correct and match the fourth, fifth and sixth rows of
 the power on sequence.

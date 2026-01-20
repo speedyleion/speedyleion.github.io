@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Inspecting PWM3320DB-TYDU SPI with Logic Analyzer"
+title:  "Inspecting PMW3320DB-TYDU SPI with Logic Analyzer"
 date:   2026-01-03 18:00:03 -0800
 categories: mice electronics 
 ---
@@ -11,7 +11,7 @@ categories: mice electronics
 
 In my previous [post]({% post_url 2026-01-02-arduino-logic-analyzer %}) I failed
 to get an Arduino working as a logic analyzer to inspect the SPI communication
-between the [EX-G][ex-g] trackball controller and the PWM3320DB-TYDU optical
+between the [EX-G][ex-g] trackball controller and the PMW3320DB-TYDU optical
 sensor. I ended up ordering a 
 [Lonely Binary logic analyzer](https://lonelybinary.com/en-us/products/dla?_pos=1&_sid=2e6665640&_ss=r)
 in the hopes that it would be able to capture the SPI communication.
@@ -43,15 +43,15 @@ hole in the exposed tang. For now I can get by attaching the alligator clips to
 the exposed tang.
 
 The test clips are called "IC test clips" because they work well for connecting
-to ICs. So I will use them to connect directly to the PWM3320DB-TYDU IC, instead
+to ICs. So I will use them to connect directly to the PMW3320DB-TYDU IC, instead
 of trying to use the touch points on the EX-G printed circuit board.
 
 The 
 [data sheet](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf?ext=.pdf)
-for the PWM3320DB-TYDU shows the circle indentions that are present on the
+for the PMW3320DB-TYDU shows the circle indentions that are present on the
 physical IC. This allows one to more easily identify which pins are which.
 
-![physical PWM3320DB-TYDU IC with SDIO, NCS, and SCLK labeled](/assets/pwm3320db_tydu.png)
+![physical PMW3320DB-TYDU IC with SDIO, NCS, and SCLK labeled](/assets/pmw3320db_tydu.png)
 
 I attached:
 
@@ -154,17 +154,17 @@ Ensuring I didn't bump the trackball, I moved the switch that controls DPI from
 the 750 DPI position to the 1500 DPI position. Logic Pro 2 stopped streaming and
 showed me the following screen.
 
-![Logic Pro 2 low to hi dpi capture zoomed out](/assets/pwm3320db_tydu_lo_to_hi_initial_screenshot.png)
+![Logic Pro 2 low to hi dpi capture zoomed out](/assets/pmw3320db_tydu_lo_to_hi_initial_screenshot.png)
 
 It doesn't look like much, but hitting the `=` key a number of times I was able to zoom in and see the following:
 
-![Logic Pro 2 low to hi dpi capture zoomed in](/assets/pwm3320db_tydu_lo_to_hi_zoomed_in.png)
+![Logic Pro 2 low to hi dpi capture zoomed in](/assets/pmw3320db_tydu_lo_to_hi_zoomed_in.png)
 
 It's a nice capture showing two bytes of data sent to the sensor, `0x8D` and `0x86`.
 
 Looking back at 
-[the SPI specification]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %}) for
-the PWM3320DB-TYDU, the `0x8D` looks like it's a write to register `0x0D`.
+[the SPI specification]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %}) for
+the PMW3320DB-TYDU, the `0x8D` looks like it's a write to register `0x0D`.
 Register `0x0D` in the 
 [data sheet](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf?ext=.pdf)
 is the `RESOLUTION` register. This seems like the correct command we would
@@ -173,7 +173,7 @@ value.
 
 I went ahead and restarted the capture with the same trigger. Then I flipped the
 switch back to the low DPI setting. This captured two bytes that were `0x8D` and
-`0x83`. The data sheet for the PWM3320DB-TYDU mentions that it has 250 cpi/step.
+`0x83`. The data sheet for the PMW3320DB-TYDU mentions that it has 250 cpi/step.
 `0x86` - `0x83` is `0x03`, or $$3$$ in decimal. 
 
 $$
@@ -182,7 +182,7 @@ $$
 $$
 
 > `cpi` is the more correct unit, but marketing material often uses `DPI`. Hence
-why the EX-G says `DPI`, while the PWM3320DB-TYDU data sheet uses `cpi`.
+why the EX-G says `DPI`, while the PMW3320DB-TYDU data sheet uses `cpi`.
 
 The difference between the two values, `0x83` and `0x86` seems to correspond to
 the available resolution. The most significant bit of the value being set may
@@ -218,7 +218,7 @@ Handling the wait time between write commands could get tricky when close to
 a clock edge, likely requiring some kind of data prefix to indicate the start of
 a message. Only sending the clock during bit transfers also means less power
 used since the controller only needs to send the clock signal when talking to
-the PWM3320DB-TYDU instead of all the time.
+the PMW3320DB-TYDU instead of all the time.
 
 ## Data Bit Values
 

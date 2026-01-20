@@ -6,9 +6,9 @@ categories: mice electronics arduino
 ---
 
 Building on my investigation in the previous 
-[post]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %}), I wanted to be able to
+[post]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %}), I wanted to be able to
 see what messages the [EX-G][ex-g] trackball controller was sending to the
-PWM3320DB-TYDU mouse sensor. I was pretty sure a 
+PMW3320DB-TYDU mouse sensor. I was pretty sure a 
 [logic analyzer](https://en.wikipedia.org/wiki/Logic_analyzer) would allow me to
 investigate the communication. Not having a dedicated logic analyzer, I
 attempted to use the Arduino UNO that I had available as a logic analyzer.
@@ -28,7 +28,7 @@ to improve on Arduino LogicAnalyzer library and its
 looked pretty easy to use. However, reading further through the
 [documentation](https://github.com/pschatzmann/logic-analyzer?tab=readme-ov-file#supported-boards)
 I saw that for AVR processors it only supported 110Khz and 500 samples. With the
-PWM3320DB-TYDU supporting up to 1Mhz the 110Khz didn't seem like it would have
+PMW3320DB-TYDU supporting up to 1Mhz the 110Khz didn't seem like it would have
 the resolution necessary to capture the messages. 500 samples is also a very
 small window to try and get the events to happen and then record them. If I did
 the math correctly it would only have a ~4ms window. With all that in mind I
@@ -92,13 +92,13 @@ analyzer sketch and currently plugged into the computer.
 # Using the Logic Analyzer
 
 During the [disassembly]({% post_url 2025-12-26-disassemble-ex-g %}) of the EX-G
-trackball I noted some points at the underside of where the PWM3320DB-TYDU
+trackball I noted some points at the underside of where the PMW3320DB-TYDU
 ribbon attaches to the circuit board:
 
 ![EX-G PCB1 underneath trackball sensor ribbon cable](/assets/ex-g-pcb1-under-ribbon.png)
 
 I previously didn't know what some of the points were for. After 
-[learning about SPI]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %}), I can
+[learning about SPI]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %}), I can
 say what these points likely represent
 
 - SD: The SPI data line
@@ -129,7 +129,7 @@ previous tests using Pin 9, which is channel 1 in PulseView, still solid low
 line.
 
 I realized the Arduino is a 5V system meaning it's looking for a 5V high line.
-While the PWM3320DB-TYDU is in a ?V system. At this point I realized I didn't
+While the PMW3320DB-TYDU is in a ?V system. At this point I realized I didn't
 know what it was operating at as part of the EX-G. From the 
 [data sheet](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf?ext=.pdf)
 the operating range is 2.1V to 3.4V. I grabbed my multimeter and checked between

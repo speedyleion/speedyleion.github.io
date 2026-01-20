@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Navigating the PWM3320DB-TYDU Data Sheet"
+title:  "Navigating the PMW3320DB-TYDU Data Sheet"
 date:   2025-12-31 10:00:03 -0800
 categories: mice electronics 
 ---
@@ -11,9 +11,9 @@ categories: mice electronics
 
 [Disassembling the EX-G Trackball]({% post_url 2025-12-26-disassemble-ex-g %})
 revealed that the optical sensor used in the EX-G trackball was the
-PWM3320DB-TYDU. There is a 
+PMW3320DB-TYDU. There is a 
 [data sheet](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf?ext=.pdf)
-that can be found on the internet for the PWM3320DB-TYDU. 
+that can be found on the internet for the PMW3320DB-TYDU. 
 
 As a reminder here is the trackball housing showing the sensor in a circuit
 board. To the left of the sensor is an LED.
@@ -118,5 +118,5 @@ There isn't much detail on how to read or write the registers or how to
 interpret the values. I'm hoping that digging into SPI might shed light into how
 to read and write the registers.
 
-I plan to dig into SPI and how to communicate with the PWM3320DB-TYDU sensor in
+I plan to dig into SPI and how to communicate with the PMW3320DB-TYDU sensor in
 the next post.

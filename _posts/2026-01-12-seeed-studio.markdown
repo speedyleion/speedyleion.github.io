@@ -8,15 +8,15 @@ categories: mice electronics arduino
 The [Atmega32U4 board][atmega32u4] I've been using for the 
 [Wired Trackball]({% post_url 2025-12-14-wired-trackball %}) project is 5V.
 While the 
-[PWM3320DB-TYDU optical sensor]({% post_url 2025-12-31-pwm3320db-tydu-sensor %})
+[PMW3320DB-TYDU optical sensor]({% post_url 2025-12-31-pmw3320db-tydu-sensor %})
 in the [EX-G][ex-g] trackball has an operating voltage of 2.1-3.4V, with an
 absolute max of 3.6V. To ensure I don't let the 
 [magic smoke](https://en.wikipedia.org/wiki/Magic_smoke) out of the
-PWM3320DB-TYDU I needed to find some way to use a lower voltage.
+PMW3320DB-TYDU I needed to find some way to use a lower voltage.
 
 To continue to use the Atmega32U4 board I would need a voltage regulator for
-powering the PWM3320DB-TYDU and a level shifter for communicating with it over
-[SPI]({% post_url 2026-01-01-spi-and-pwm3320db-tydu %}). Many versions of these
+powering the PMW3320DB-TYDU and a level shifter for communicating with it over
+[SPI]({% post_url 2026-01-01-spi-and-pmw3320db-tydu %}). Many versions of these
 components can be found at online retailers like
 [DigiKey](https://www.digikey.com/). The individual components are often
 less than $1, but the retailers (understandably) charge shipping that's $6-$8. 
@@ -45,10 +45,10 @@ initial project
 | Right Click | 1 pin |
 | Middle Click | 1 pin |
 
-> The PWM3320DB-TYDU is a 3 pin SPI peripheral, but the controllers still need
+> The PMW3320DB-TYDU is a 3 pin SPI peripheral, but the controllers still need
 to use 4 pins. More on that in a later post.
 
-I will likely use one of the remaining pins to leverage the PWM3320DB-TYDU
+I will likely use one of the remaining pins to leverage the PMW3320DB-TYDU
 interrupt signal, taking the total used up to 10.
 
 The esp32c6 will meet my needs, but won't leave much room for further expansion.
