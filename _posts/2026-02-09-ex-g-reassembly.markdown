@@ -12,7 +12,7 @@ completed in the following posts:
 - [EX-G Scroll Wheel Part 2]({% post_url 2026-02-02-scroll-wheel-part-two %})
 - [EX-G Hardware Switches Part 2]({% post_url 2026-02-07-ex-g-buttons %})
 
-The only thins left is physically wiring the 
+The only thing left is physically wiring the 
 [ESP32S3](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/) to the
 EX-G hardware. To accomplish this I'm going to solder wires directly to the 
 [PMW3320DB-TYDU](https://www.epsglobal.com/Media-Library/EPSGlobal/Products/files/pixart/PMW3320DB-TYDU.pdf) 
